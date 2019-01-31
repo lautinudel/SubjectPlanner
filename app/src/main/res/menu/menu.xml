@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item android:id="@+id/action_settings1"
+        android:title="Ordenar por materias promocionadas"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_settings2"
+        android:title="Ordenar por año"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_buscar"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:orderInCategory="115"
+        android:title="Buscar"
+        app:showAsAction="always|collapseActionView" />
+
+</menu>
