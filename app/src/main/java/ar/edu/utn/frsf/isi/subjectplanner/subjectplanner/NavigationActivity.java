@@ -14,9 +14,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
+
+//Esta clase representa el menu lateral y el toolbar
+
+
+
+//Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,15 +31,6 @@ public class NavigationActivity extends AppCompatActivity
         setContentView(R.layout.activity_navigation);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -76,28 +74,37 @@ public class NavigationActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
+
+    //Este metodo sirve para cuando el usuario toca un boton del menu lateral
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         Fragment fragment = null;
         Boolean fragmentoSeleccionado = false;
-
         int id = item.getItemId();
 
-        if (id == R.id.navAsignaturas) {
+        if (id == R.id.navAsignaturas) {  //Boton asignaturas
 
-        } else if (id == R.id.navProfesores) {
+        } else if (id == R.id.navProfesores) { //Boton Profesores
 
-        } else if (id == R.id.navTareas) {
+        } else if (id == R.id.navTareas) { //Boton Tareas
             fragmentoSeleccionado=true;
             fragment = new TareasFragment();
+            getSupportActionBar().setTitle("Tareas");
 
-        } else if (id == R.id.navPromedios) {
+        } else if (id == R.id.navPromedios) { //Boton Promedios
 
-        } else if (id == R.id.navFotografias) {
+        } else if (id == R.id.navFotografias) { //Boton Fotografias
 
         }
 
+        //Si el usuario selecciono un boton, me muevo al fragmento correspondiente
         if(fragmentoSeleccionado){
             getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
         }

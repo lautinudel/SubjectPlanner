@@ -3,33 +3,26 @@ package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TareasFragment.OnFragmentInteractionListener} interface
+ * {@link NuevaTareaFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link TareasFragment#newInstance} factory method to
+ * Use the {@link NuevaTareaFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TareasFragment extends Fragment {
+public class NuevaTareaFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ListView lista;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -37,7 +30,7 @@ public class TareasFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public TareasFragment() {
+    public NuevaTareaFragment() {
         // Required empty public constructor
     }
 
@@ -47,11 +40,11 @@ public class TareasFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment TareasFragment.
+     * @return A new instance of fragment NuevaTareaFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TareasFragment newInstance(String param1, String param2) {
-        TareasFragment fragment = new TareasFragment();
+    public static NuevaTareaFragment newInstance(String param1, String param2) {
+        NuevaTareaFragment fragment = new NuevaTareaFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -66,45 +59,17 @@ public class TareasFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
     }
 
-
-    //Lo uso para mostrar el listView con todas las tareas
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        //Cambio el icono del menu lateral por una X
+        ((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        View view = inflater.inflate(R.layout.fragment_tareas, container, false);
-        lista = view.findViewById(R.id.listViewTareas);
-
-
-        //Ejemplo
-        String datos[][] = {
-                {"Asistir reunion", "Dia: 19/11/2018", "Hora: 18:00", "Avisar: Si"},
-                {"Juntarse a estudiar", "Dia: 11/10/2018", "Hora: 16:20", "Avisar: No"},
-        };
-
-        lista.setAdapter(new AdaptadorTareas(getActivity().getApplicationContext(), datos));
-
-        //Boton flotante de nueva tarea
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addTarea);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Toast.makeText(getActivity().getApplicationContext(), "ME MUEVO A NUEVA TAREA",Toast.LENGTH_SHORT).show();
-                Fragment fragment = new NuevaTareaFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
-                ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Crear nueva tarea");
-            }
-        });
-
-
-        return view;
-
+        return inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
     }
-
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

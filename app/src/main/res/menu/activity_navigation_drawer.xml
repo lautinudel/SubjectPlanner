@@ -6,19 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navAsignaturas"
-            android:title="Asignaturas" />
+            android:title="Asignaturas"
+            android:icon="@drawable/ic_folder_open_black_24dp"/>
         <item
             android:id="@+id/navProfesores"
-            android:title="Profesores" />
+            android:title="Profesores"
+            android:icon="@drawable/ic_perm_contact_calendar_black_24dp"/>
         <item
             android:id="@+id/navTareas"
-            android:title="Tareas"/>
+            android:title="Tareas"
+            android:icon="@drawable/ic_check_box_black_24dp"/>
         <item
             android:id="@+id/navPromedios"
-            android:title="Promedios" />
+            android:title="Promedios"
+            android:icon="@drawable/ic_add_box_black_24dp"/>
         <item
             android:id="@+id/navFotografias"
-            android:title="Fotografias" />
+            android:title="Fotografias"
+            android:icon="@drawable/ic_menu_camera"/>
     </group>
 
 </menu>
