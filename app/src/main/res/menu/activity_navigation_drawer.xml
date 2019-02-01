@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navAsignaturas"
+            android:title="Asignaturas" />
+        <item
+            android:id="@+id/navProfesores"
+            android:title="Profesores" />
+        <item
+            android:id="@+id/navTareas"
+            android:title="Tareas"/>
+        <item
+            android:id="@+id/navPromedios"
+            android:title="Promedios" />
+        <item
+            android:id="@+id/navFotografias"
+            android:title="Fotografias" />
+    </group>
+
+</menu>

@@ -16,7 +16,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NuevaAsignaturaActivity"></activity>
+        <activity android:name=".NuevaAsignaturaActivity" />
+        <activity
+            android:name=".NavigationActivity"
+            android:label="@string/title_activity_navigation"
+            android:theme="@style/AppTheme"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
