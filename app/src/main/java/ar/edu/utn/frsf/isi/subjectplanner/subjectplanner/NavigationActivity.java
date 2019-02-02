@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 //Esta clase representa el menu lateral y el toolbar
@@ -23,7 +24,8 @@ import android.widget.TextView;
 
 //Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
+                    , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +61,16 @@ public class NavigationActivity extends AppCompatActivity
         return true;
     }
 
+
+    //Boton de configuracion
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings1) {
+        if (id == R.id.action_settings) {
+            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -90,6 +93,9 @@ public class NavigationActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.navAsignaturas) {  //Boton asignaturas
+            fragmentoSeleccionado=true;
+            fragment = new AsignaturaFragment();
+            getSupportActionBar().setTitle("Asignaturas");
 
         } else if (id == R.id.navProfesores) { //Boton Profesores
 
