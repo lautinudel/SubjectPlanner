@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -22,6 +23,10 @@ import android.widget.Toast;
 import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
+
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.TareaDao;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 
 /**
@@ -43,12 +48,16 @@ public class NuevaTareaFragment extends Fragment {
     private String mParam2;
 
 
-    private String nombre=null;
-    private Date dia=null;
-    private Time hora=null;
+    public String nombre;
+    public int dia;
+    public int mes;
+    public int anio;
+    public int hora;
+    public int minutos;
+    private int avisar;
 
     private OnFragmentInteractionListener mListener;
-
+    private TareaDao tdao;
     public NuevaTareaFragment() {
         // Required empty public constructor
     }
@@ -92,14 +101,16 @@ public class NuevaTareaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
+        final Switch swAvisar = (Switch) view.findViewById(R.id.switchAvisar);
+        final EditText edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
         //Cambio el icono del menu lateral por una X  NO ANDA
         /*((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);*/
 
-        //Obtengo el nombre de la tarea
-        final EditText edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
-        nombre = edtnombre.getText().toString();
+
+
+
 
 
         //Muestro el calendario para elegir el dia de la tarea
@@ -120,10 +131,13 @@ public class NuevaTareaFragment extends Fragment {
                         //System.out.println("Año: "+year+" mes: "+month+" dia: "+day);
                         month = month+1;
                         edtDia.setText(day+"/"+month+"/"+year);
-                        mcurrentDate.set(Calendar.YEAR, year);
+                        /*mcurrentDate.set(Calendar.YEAR, year);
                         mcurrentDate.set(Calendar.MONTH, month-1);
                         mcurrentDate.set(Calendar.DATE, day);
-                        dia = mcurrentDate.getTime();
+                        dia = mcurrentDate.getTime();/*/
+                        dia = day;
+                        mes = month;
+                        anio = year;
                     }
                 },mYear, mMonth, mDay);
                 mDatePicker.getDatePicker().setMinDate(mcurrentDate.getTimeInMillis());
@@ -139,13 +153,15 @@ public class NuevaTareaFragment extends Fragment {
             public void onClick(View v) {
                 final Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+                final int minute = mcurrentTime.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
                 mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                         edtHora.setText( selectedHour + ":" + selectedMinute);
-                        hora = new Time(selectedHour,selectedMinute,0 );
+                       // hora = new Time(selectedHour,selectedMinute,0 );
+                        hora = selectedHour;
+                        minutos = selectedMinute;
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
@@ -154,22 +170,49 @@ public class NuevaTareaFragment extends Fragment {
             }
         });
 
-        //Acciones cuando se presiona el boton guardar
 
+
+
+
+        //Acciones cuando se presiona el boton guardar
         Button button = (Button) view.findViewById(R.id.buttonGuardar);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-            if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
-               Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
-            }else{
-                //Hacer algo
-            }
+                if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
+                    Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
+                }else {
 
+                    //Obtengo el valor del switch
+                    if(swAvisar.isChecked()) avisar=1;
+                    else avisar=0;
+
+                    //Guardo la tarea en la bd
+                    Thread r = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
+                                tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                                tdao.insert(nuevaTarea);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity().getApplicationContext(), "La tarea se agrego correctamente", Toast.LENGTH_LONG).show();
+                                edtnombre.setText("");
+                                edtDia.setText("");
+                                edtHora.setText("");
+                            }
+                            });
+                        }
+                    };
+                r.start();
+                }
 
             }
         });
-
-
         return view;
     }
 
