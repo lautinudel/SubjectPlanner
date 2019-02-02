@@ -27,6 +27,9 @@ public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener{
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,12 @@ public class NavigationActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //La primera vez que ejecuto la aplicacion me voy a Asignaturas
+        Fragment fragment = new AsignaturaFragment();
+        getSupportActionBar().setTitle("Asignaturas");
+        getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
+
     }
 
     @Override
@@ -68,6 +77,7 @@ public class NavigationActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
         if (id == R.id.action_settings) {
             Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
@@ -85,8 +95,6 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         Fragment fragment = null;
         Boolean fragmentoSeleccionado = false;
@@ -94,25 +102,26 @@ public class NavigationActivity extends AppCompatActivity
 
         if (id == R.id.navAsignaturas) {  //Boton asignaturas
             fragmentoSeleccionado=true;
-            fragment = new AsignaturaFragment();
             getSupportActionBar().setTitle("Asignaturas");
+            fragment = new AsignaturaFragment();
 
         } else if (id == R.id.navProfesores) { //Boton Profesores
-
+            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
         } else if (id == R.id.navTareas) { //Boton Tareas
             fragmentoSeleccionado=true;
-            fragment = new TareasFragment();
             getSupportActionBar().setTitle("Tareas");
+            fragment = new TareasFragment();
+
 
         } else if (id == R.id.navPromedios) { //Boton Promedios
-
+            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
         } else if (id == R.id.navFotografias) { //Boton Fotografias
-
+            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
         }
 
         //Si el usuario selecciono un boton, me muevo al fragmento correspondiente
         if(fragmentoSeleccionado){
-            getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -124,4 +133,10 @@ public class NavigationActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+    /*@Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }*/
+
 }

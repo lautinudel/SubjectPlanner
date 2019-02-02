@@ -94,7 +94,7 @@ public class TareasFragment extends Fragment {
             public void onClick(View view) {
                 //Toast.makeText(getActivity().getApplicationContext(), "ME MUEVO A NUEVA TAREA",Toast.LENGTH_SHORT).show();
                 Fragment fragment = new NuevaTareaFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
                 ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Crear nueva tarea");
             }
         });

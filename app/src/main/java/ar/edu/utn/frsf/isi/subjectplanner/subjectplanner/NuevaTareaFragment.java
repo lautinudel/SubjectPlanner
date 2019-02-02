@@ -1,13 +1,27 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -27,6 +41,11 @@ public class NuevaTareaFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    private String nombre=null;
+    private Date dia=null;
+    private Time hora=null;
 
     private OnFragmentInteractionListener mListener;
 
@@ -59,16 +78,99 @@ public class NuevaTareaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
+
+
     }
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //Cambio el icono del menu lateral por una X
-        ((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
-        ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        View view = inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
+        //Cambio el icono del menu lateral por una X  NO ANDA
+        /*((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);*/
 
-        return inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
+        //Obtengo el nombre de la tarea
+        final EditText edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
+        nombre = edtnombre.getText().toString();
+
+
+        //Muestro el calendario para elegir el dia de la tarea
+
+        final EditText edtDia = (EditText) view.findViewById(R.id.TextInputEditTextDia);
+        edtDia.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View v) {
+                final Calendar mcurrentDate=Calendar.getInstance();
+                int mYear = mcurrentDate.get(Calendar.YEAR);
+                int mMonth = mcurrentDate.get(Calendar.MONTH);
+                int mDay = mcurrentDate.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog mDatePicker=new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                        //System.out.println("Año: "+year+" mes: "+month+" dia: "+day);
+                        month = month+1;
+                        edtDia.setText(day+"/"+month+"/"+year);
+                        mcurrentDate.set(Calendar.YEAR, year);
+                        mcurrentDate.set(Calendar.MONTH, month-1);
+                        mcurrentDate.set(Calendar.DATE, day);
+                        dia = mcurrentDate.getTime();
+                    }
+                },mYear, mMonth, mDay);
+                mDatePicker.getDatePicker().setMinDate(mcurrentDate.getTimeInMillis());
+                mDatePicker.show();
+            }
+        });
+
+       //Muestro un reloj para que el usuario seleccione un horario
+
+        final EditText edtHora = (EditText) view.findViewById(R.id.TextInputEditTextHora);
+        edtHora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        edtHora.setText( selectedHour + ":" + selectedMinute);
+                        hora = new Time(selectedHour,selectedMinute,0 );
+                    }
+                }, hour, minute, true);//Yes 24 hour time
+                mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+
+            }
+        });
+
+        //Acciones cuando se presiona el boton guardar
+
+        Button button = (Button) view.findViewById(R.id.buttonGuardar);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
+               Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
+            }else{
+                //Hacer algo
+            }
+
+
+            }
+        });
+
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
