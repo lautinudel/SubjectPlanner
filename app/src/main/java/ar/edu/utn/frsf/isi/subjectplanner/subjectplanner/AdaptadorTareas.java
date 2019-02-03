@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
+
 
 //Esta clase se usa para organizar los datos de cada fila de la actividad Tareas (organiza los datos de cada fila)
 
@@ -15,10 +19,10 @@ import android.widget.TextView;
 public class AdaptadorTareas extends BaseAdapter {
     private static LayoutInflater inflater = null;
     Context contexto;
-    String[][] datos;
+    ArrayList<Tarea> datos;
 
 
-    public AdaptadorTareas(Context contexto, String[][] datos){
+    public AdaptadorTareas(Context contexto, ArrayList<Tarea> datos){
         this.contexto=contexto;
         this.datos=datos;
         inflater = (LayoutInflater) contexto.getSystemService(contexto.LAYOUT_INFLATER_SERVICE);
@@ -33,17 +37,19 @@ public class AdaptadorTareas extends BaseAdapter {
         TextView hora = (TextView) vista.findViewById(R.id.textViewHora);
         TextView avisar = (TextView) vista.findViewById(R.id.textViewAvisar);
 
-        titulo.setText(datos[i][0]);
-        dia.setText(datos[i][1]);
-        hora.setText(datos[i][2]);
-        avisar.setText(datos[i][3]);
+        titulo.setText(datos.get(i).getNombre().toString());
+        dia.setText(datos.get(i).getDia()+"/"+datos.get(i).getMes()+"/"+datos.get(i).anio);
+        hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());
+        if(datos.get(i).avisar==1)avisar.setText("Avisar: Si");
+        else avisar.setText("Avisar: No");
+
 
         return vista;
     }
 
     @Override
     public int getCount() {
-        return datos.length;
+        return datos.size();
     }
 
     @Override

@@ -14,6 +14,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.TareaDao;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 
 /**
@@ -30,6 +35,7 @@ public class TareasFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private ListView lista;
+    private TareaDao tdao;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -78,14 +84,30 @@ public class TareasFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tareas, container, false);
         lista = view.findViewById(R.id.listViewTareas);
 
+        final ArrayList<Tarea> datos = new ArrayList<Tarea>();
+        final AdaptadorTareas adapter = new AdaptadorTareas(getActivity().getApplicationContext(), datos);
+        Thread r = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                    List<Tarea> listaTareas = tdao.getAll();;
+                    datos.addAll(listaTareas);
+                    adapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }};
+        r.start();
 
-        //Ejemplo
-        String datos[][] = {
-                {"Asistir reunion", "Dia: 19/11/2018", "Hora: 18:00", "Avisar: Si"},
-                {"Juntarse a estudiar", "Dia: 11/10/2018", "Hora: 16:20", "Avisar: No"},
-        };
+        lista.setAdapter(adapter);
 
-        lista.setAdapter(new AdaptadorTareas(getActivity().getApplicationContext(), datos));
+
+
+
+
+
+
 
         //Boton flotante de nueva tarea
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addTarea);
