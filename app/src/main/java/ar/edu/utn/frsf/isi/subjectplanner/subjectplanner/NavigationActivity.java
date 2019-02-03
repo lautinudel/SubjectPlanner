@@ -27,7 +27,7 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 //Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
-        implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
+        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener{
 
 
@@ -110,6 +110,7 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.navProfesores) { //Boton Profesores
             Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+
         } else if (id == R.id.navTareas) { //Boton Tareas
             fragmentoSeleccionado=true;
             getSupportActionBar().setTitle("Tareas");
@@ -118,9 +119,17 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.navPromedios) { //Boton Promedios
             Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+
         } else if (id == R.id.navFotografias) { //Boton Fotografias
             Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+
+        } else if (id == R.id.navAbout) { //Boton Sobre SubjectPlanner
+            fragmentoSeleccionado=true;
+            getSupportActionBar().setTitle("Acerca de");
+            fragment = new AboutFragment();
         }
+
+
 
         //Si el usuario selecciono un boton, me muevo al fragmento correspondiente
         if(fragmentoSeleccionado){

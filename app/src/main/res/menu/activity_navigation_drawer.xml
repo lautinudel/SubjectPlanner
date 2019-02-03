@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group1">
         <item
             android:id="@+id/navAsignaturas"
             android:title="Asignaturas"
@@ -16,6 +16,10 @@
             android:id="@+id/navTareas"
             android:title="Tareas"
             android:icon="@drawable/ic_check_box_black_24dp"/>
+    </group>
+
+
+    <group android:id="@+id/group2">
         <item
             android:id="@+id/navPromedios"
             android:title="Promedios"
@@ -24,6 +28,14 @@
             android:id="@+id/navFotografias"
             android:title="Fotografias"
             android:icon="@drawable/ic_menu_camera"/>
+    </group>
+
+
+    <group android:id="@+id/group3">
+        <item
+            android:id="@+id/navAbout"
+            android:title="Acerca de"
+            android:icon="@drawable/ic_info_black_24dp"/>
     </group>
 
 </menu>
