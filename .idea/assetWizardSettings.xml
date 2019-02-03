@@ -62,8 +62,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_close_black_24dp" />
+                            <entry key="color" value="ff0c11" />
+                            <entry key="outputName" value="ic_close_red_24dp" />
                             <entry key="sourceFile" value="C:\Users\Mateo" />
                           </map>
                         </option>

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ public class TareasFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private ListView lista;
     private TareaDao tdao;
+    private Comunicador comunicador;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -72,7 +74,7 @@ public class TareasFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        comunicador = (Comunicador) getActivity();
 
     }
 
@@ -83,7 +85,7 @@ public class TareasFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_tareas, container, false);
         lista = view.findViewById(R.id.listViewTareas);
-
+        lista.setEmptyView(view.findViewById(R.id.textViewVacio));
         final ArrayList<Tarea> datos = new ArrayList<Tarea>();
         final AdaptadorTareas adapter = new AdaptadorTareas(getActivity().getApplicationContext(), datos);
         Thread r = new Thread() {
@@ -93,16 +95,32 @@ public class TareasFragment extends Fragment {
                     tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
                     List<Tarea> listaTareas = tdao.getAll();;
                     datos.addAll(listaTareas);
-                    adapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
             }};
         r.start();
 
         lista.setAdapter(adapter);
 
-
+        //Acciones si toco una fila de la lista (una tarea en particular)
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment fragment = new NuevaTareaFragment();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment, "editarTarea").addToBackStack(null).commit();
+                ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Editar tarea");
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
+                //comunicador.responder(datos.get(position), false);
+            }
+        });
 
 
 

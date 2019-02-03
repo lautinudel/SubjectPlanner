@@ -1,5 +1,6 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
+import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +18,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
+
 
 //Esta clase representa el menu lateral y el toolbar
 
@@ -24,7 +27,7 @@ import android.widget.Toast;
 
 //Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
+        implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener{
 
 
@@ -138,5 +141,12 @@ public class NavigationActivity extends AppCompatActivity
         onBackPressed();
         return true;
     }*/
+
+    @Override
+    public void responder(Tarea tarea, boolean nueva){
+        NuevaTareaFragment fragment = (NuevaTareaFragment) getSupportFragmentManager().findFragmentByTag("editarTarea");
+        fragment.editarTarea(tarea,nueva);
+
+    }
 
 }
