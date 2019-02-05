@@ -82,4 +82,14 @@ public class Tarea {
     public void setAvisar(int avisar) {
         this.avisar = avisar;
     }
+
+    public void setearDatos(String nombre, int dia, int mes, int anio, int hora, int minutos, int avisar){
+        this.nombre = nombre;
+        this.dia = dia;
+        this.mes = mes;
+        this.anio = anio;
+        this.hora = hora;
+        this.minutos = minutos;
+        this.avisar = avisar;
+    }
 }

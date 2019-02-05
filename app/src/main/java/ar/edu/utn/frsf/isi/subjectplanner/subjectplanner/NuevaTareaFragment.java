@@ -40,14 +40,6 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
  * create an instance of this fragment.
  */
 public class NuevaTareaFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
 
     public String nombre;
@@ -58,76 +50,55 @@ public class NuevaTareaFragment extends Fragment {
     public int minutos;
     private int avisar;
     private Tarea tarea;
-
-    private LayoutInflater inflater;
-    private ViewGroup container;
-    private Bundle savedInstanceState;
-
     private OnFragmentInteractionListener mListener;
     private TareaDao tdao;
-    public NuevaTareaFragment() {
-    }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NuevaTareaFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NuevaTareaFragment newInstance(String param1, String param2) {
-        NuevaTareaFragment fragment = new NuevaTareaFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public NuevaTareaFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-
-
-
-
     }
 
-
-
-
+    //Elementos de la pantalla
+    private EditText edtnombre;
+    private TextInputLayout nombreLayout;
+    private Switch swAvisar;
+    private EditText edtDia;
+    private TextInputLayout diaLayout;
+    private EditText edtHora;
+    private TextInputLayout horaLayout;
+    private boolean tocoDia;
+    private boolean tocoHora;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.inflater=inflater;
-        this.container=container;
-        this. savedInstanceState=savedInstanceState;
 
         View view = inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
-        final Switch swAvisar = (Switch) view.findViewById(R.id.switchAvisar);
-        final EditText edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
-        final EditText edtDia = (EditText) view.findViewById(R.id.TextInputEditTextDia);
-        final EditText edtHora = (EditText) view.findViewById(R.id.TextInputEditTextHora);
+        swAvisar = (Switch) view.findViewById(R.id.switchAvisar);
+        edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
+        edtDia = (EditText) view.findViewById(R.id.TextInputEditTextDia);
+        edtHora = (EditText) view.findViewById(R.id.TextInputEditTextHora);
+        nombreLayout = view.findViewById(R.id.TextInputLayoutNombre);
+        diaLayout = view.findViewById(R.id.TextInputLayoutDia);
+        horaLayout = view.findViewById(R.id.TextInputLayoutHora);
+        tocoDia=false;
+        tocoHora = false;
+
         //Cambio el icono del menu lateral por una X  NO ANDA
         /*((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);*/
-        TextInputLayout nombre = view.findViewById(R.id.TextInputLayoutNombre);
-        if(tarea!=null){
-        nombre.setHintAnimationEnabled(false);
-        edtnombre.setText(tarea.getNombre());}
+
+
+
         //Muestro el calendario para elegir el dia de la tarea
         edtDia.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
+                tocoDia = true;
                 final Calendar mcurrentDate=Calendar.getInstance();
                 int mYear = mcurrentDate.get(Calendar.YEAR);
                 int mMonth = mcurrentDate.get(Calendar.MONTH);
@@ -153,12 +124,13 @@ public class NuevaTareaFragment extends Fragment {
             }
         });
 
+
+
        //Muestro un reloj para que el usuario seleccione un horario
-
-
         edtHora.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tocoHora = true;
                 final Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 final int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -189,34 +161,68 @@ public class NuevaTareaFragment extends Fragment {
                 if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
                     Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
-
                     //Obtengo el valor del switch
                     if(swAvisar.isChecked()) avisar=1;
                     else avisar=0;
-
-                    //Guardo la tarea en la bd
-                    Thread r = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
-                                tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
-                                tdao.insert(nuevaTarea);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            getActivity().runOnUiThread(new Runnable() {
+                    if(tarea!=null){   //Tarea editada
+                        if(!tocoDia){
+                         dia = tarea.getDia();
+                         mes = tarea.getMes();
+                         anio = tarea.getAnio();
+                        }
+                        if(!tocoHora){
+                            hora = tarea.getHora();
+                            minutos = tarea.getMinutos();
+                        }
+                        //Guardo la tarea editada
+                        Thread r = new Thread() {
                             @Override
                             public void run() {
-                                Toast.makeText(getActivity().getApplicationContext(), "La tarea se agrego correctamente", Toast.LENGTH_LONG).show();
-                                edtnombre.setText("");
-                                edtDia.setText("");
-                                edtHora.setText("");
+                                try {
+                                    tarea.setearDatos(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
+                                    tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                                    tdao.update(tarea);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "La tarea se edito correctamente", Toast.LENGTH_LONG).show();
+                                        edtnombre.setText("");
+                                        edtDia.setText("");
+                                        edtHora.setText("");
+                                    }
+                                });
                             }
-                            });
-                        }
-                    };
-                r.start();
+                        };
+                        r.start();
+                    }else{  //Tarea nueva
+                        //Guardo la tarea en la bd
+                        Thread r = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
+                                    tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                                    tdao.insert(nuevaTarea);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "La tarea se agrego correctamente", Toast.LENGTH_LONG).show();
+                                        edtnombre.setText("");
+                                        edtDia.setText("");
+                                        edtHora.setText("");
+                                    }
+                                });
+                            }
+                        };
+                        r.start();
+                    }
+
                 }
 
             }
@@ -264,9 +270,20 @@ public class NuevaTareaFragment extends Fragment {
     }
 
     public void editarTarea(Tarea t) {
-        //System.out.println(t.getNombre());
         this.tarea = t;
-        this.onCreateView(inflater, container, savedInstanceState);
+
+        //Muestro los datos de la tarea por pantalla
+        nombreLayout.setHintAnimationEnabled(false);
+        edtnombre.setText(tarea.getNombre());
+        diaLayout.setHintAnimationEnabled(false);
+        edtDia.setText(tarea.getDia()+"/"+tarea.getMes()+"/"+tarea.getAnio());
+        horaLayout.setHintAnimationEnabled(false);
+        edtHora.setText(tarea.getHora()+":"+tarea.getMinutos());
+        if(tarea.getAvisar()==1){
+            swAvisar.setChecked(true);
+        }
+
+
 
     }
 }
