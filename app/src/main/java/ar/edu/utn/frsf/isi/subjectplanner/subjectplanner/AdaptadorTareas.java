@@ -5,7 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -30,7 +33,7 @@ public class AdaptadorTareas extends BaseAdapter {
 
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
-
+        final int position =i;
         final View vista = inflater.inflate(R.layout.elemento_lista_tareas, null);
         TextView titulo = (TextView) vista.findViewById(R.id.textViewTitulo);
         TextView dia = (TextView) vista.findViewById(R.id.textViewDia);
@@ -42,6 +45,7 @@ public class AdaptadorTareas extends BaseAdapter {
         hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());
         if(datos.get(i).avisar==1)avisar.setText("Avisar: Si");
         else avisar.setText("Avisar: No");
+
 
 
         return vista;

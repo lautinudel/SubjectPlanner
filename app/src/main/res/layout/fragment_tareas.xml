@@ -34,6 +34,13 @@
             android:layout_height="match_parent"
             android:id="@+id/listViewTareas"/>
 
+        <TextView
+            android:id="@+id/textViewVacio"
+            android:layout_width="172dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/Vacio" />
+
     </RelativeLayout>
 
 </FrameLayout>

@@ -55,11 +55,12 @@ public class NuevaTareaFragment extends Fragment {
     public int hora;
     public int minutos;
     private int avisar;
+    private boolean nueva;
+    private Tarea tarea;
 
     private OnFragmentInteractionListener mListener;
     private TareaDao tdao;
     public NuevaTareaFragment() {
-        // Required empty public constructor
     }
 
     /**
@@ -100,9 +101,12 @@ public class NuevaTareaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
         final Switch swAvisar = (Switch) view.findViewById(R.id.switchAvisar);
         final EditText edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
+        final EditText edtDia = (EditText) view.findViewById(R.id.TextInputEditTextDia);
+        final EditText edtHora = (EditText) view.findViewById(R.id.TextInputEditTextHora);
         //Cambio el icono del menu lateral por una X  NO ANDA
         /*((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -112,10 +116,16 @@ public class NuevaTareaFragment extends Fragment {
 
 
 
+        /*if(!nueva){
+            System.out.println(this.tarea.getNombre());
+            edtnombre.setText(tarea.getNombre());
+            edtDia.setText(tarea.getDia()+"/"+tarea.getMes()+"/"+tarea.getAnio());
+            edtHora.setText(tarea.getHora()+":"+tarea.getMinutos());
+        }*/
+
+
 
         //Muestro el calendario para elegir el dia de la tarea
-
-        final EditText edtDia = (EditText) view.findViewById(R.id.TextInputEditTextDia);
         edtDia.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -147,7 +157,7 @@ public class NuevaTareaFragment extends Fragment {
 
        //Muestro un reloj para que el usuario seleccione un horario
 
-        final EditText edtHora = (EditText) view.findViewById(R.id.TextInputEditTextHora);
+
         edtHora.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -253,5 +263,11 @@ public class NuevaTareaFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void editarTarea(Tarea tarea, boolean nueva){
+        //System.out.println(tarea.getNombre());
+        this.tarea=tarea;
+        this.nueva=nueva;
     }
 }
