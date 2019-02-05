@@ -105,7 +105,7 @@ public class NavigationActivity extends AppCompatActivity
 
         if (id == R.id.navAsignaturas) {  //Boton asignaturas
             fragmentoSeleccionado=true;
-            getSupportActionBar().setTitle("Asignaturas");
+
             fragment = new AsignaturaFragment();
 
         } else if (id == R.id.navProfesores) { //Boton Profesores

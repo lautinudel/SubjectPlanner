@@ -12,22 +12,79 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtNombre"
             android:hint="Nombre"
+            android:inputType="text"
             android:layout_gravity="start|top"
+            android:layout_marginBottom="20px"
             />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edtAnio"
             android:hint="Año"
+            android:inputType="number"
             android:layout_gravity="start|top"
+            android:layout_marginBottom="20px"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20px">
+
+            <Spinner
+                android:id="@+id/spnNivel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:id="@+id/spnPeriodo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edtProfesor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="Profesor"
+            android:inputType="text"
+            android:layout_marginBottom="20px"/>
+
+        <EditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:hint="E-mail"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="20px"/>
+
+        <EditText
+            android:id="@+id/edtObservaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:inputType="text"
+            android:hint="Observaciones"
+            android:layout_marginBottom="20px"/>
+
+        <Button
+            android:id="@+id/btnGuardarAsignatura"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GUARDAR" />
+
+
     </LinearLayout>
     </RelativeLayout>
 </FrameLayout>
