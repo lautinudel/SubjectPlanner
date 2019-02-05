@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -55,8 +57,11 @@ public class NuevaTareaFragment extends Fragment {
     public int hora;
     public int minutos;
     private int avisar;
-    private boolean nueva;
     private Tarea tarea;
+
+    private LayoutInflater inflater;
+    private ViewGroup container;
+    private Bundle savedInstanceState;
 
     private OnFragmentInteractionListener mListener;
     private TareaDao tdao;
@@ -101,6 +106,9 @@ public class NuevaTareaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.inflater=inflater;
+        this.container=container;
+        this. savedInstanceState=savedInstanceState;
 
         View view = inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
         final Switch swAvisar = (Switch) view.findViewById(R.id.switchAvisar);
@@ -111,20 +119,10 @@ public class NuevaTareaFragment extends Fragment {
         /*((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
         ((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);*/
-
-
-
-
-
-        /*if(!nueva){
-            System.out.println(this.tarea.getNombre());
-            edtnombre.setText(tarea.getNombre());
-            edtDia.setText(tarea.getDia()+"/"+tarea.getMes()+"/"+tarea.getAnio());
-            edtHora.setText(tarea.getHora()+":"+tarea.getMinutos());
-        }*/
-
-
-
+        TextInputLayout nombre = view.findViewById(R.id.TextInputLayoutNombre);
+        if(tarea!=null){
+        nombre.setHintAnimationEnabled(false);
+        edtnombre.setText(tarea.getNombre());}
         //Muestro el calendario para elegir el dia de la tarea
         edtDia.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -174,7 +172,7 @@ public class NuevaTareaFragment extends Fragment {
                         minutos = selectedMinute;
                     }
                 }, hour, minute, true);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
+                mTimePicker.setTitle("Seleccione una hora");
                 mTimePicker.show();
 
             }
@@ -265,9 +263,10 @@ public class NuevaTareaFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public void editarTarea(Tarea tarea, boolean nueva){
-        //System.out.println(tarea.getNombre());
-        this.tarea=tarea;
-        this.nueva=nueva;
+    public void editarTarea(Tarea t) {
+        //System.out.println(t.getNombre());
+        this.tarea = t;
+        this.onCreateView(inflater, container, savedInstanceState);
+
     }
 }

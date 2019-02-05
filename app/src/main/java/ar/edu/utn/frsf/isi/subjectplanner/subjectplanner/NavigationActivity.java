@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
+
 
 //Esta clase representa el menu lateral y el toolbar
 
@@ -24,7 +26,7 @@ import android.widget.Toast;
 
 //Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
+        implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener{
 
 
@@ -142,6 +144,12 @@ public class NavigationActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void responder(Tarea tarea) {
+        NuevaTareaFragment fragment = (NuevaTareaFragment) getSupportFragmentManager().findFragmentByTag("editarTarea");
+        fragment.editarTarea(tarea);
     }
     /*@Override
     public boolean onSupportNavigateUp() {

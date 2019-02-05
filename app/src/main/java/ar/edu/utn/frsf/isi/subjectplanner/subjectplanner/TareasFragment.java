@@ -118,7 +118,7 @@ public class TareasFragment extends Fragment {
                 ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment, "editarTarea").addToBackStack(null).commit();
                 ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Editar tarea");
                 ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
-                //comunicador.responder(datos.get(position), false);
+                comunicador.responder(datos.get(position));
             }
         });
 
