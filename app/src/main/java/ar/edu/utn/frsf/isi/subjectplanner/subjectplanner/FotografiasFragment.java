@@ -87,6 +87,7 @@ public class FotografiasFragment extends Fragment {
         });
 
         generarDrawables();
+        
         return v;
     }
 
