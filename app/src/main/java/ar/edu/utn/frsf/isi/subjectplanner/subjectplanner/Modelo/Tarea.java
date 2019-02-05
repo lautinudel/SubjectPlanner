@@ -3,8 +3,7 @@ package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.sql.Time;
-import java.util.Date;
+
 @Entity
 public class Tarea {
     @PrimaryKey(autoGenerate = true)

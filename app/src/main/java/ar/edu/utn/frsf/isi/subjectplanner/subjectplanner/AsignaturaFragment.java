@@ -13,6 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.AsignaturaDao;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Asignatura;
 
 
 /**
@@ -34,6 +39,10 @@ public class AsignaturaFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private AsignaturaDao aDao;
+    private ArrayList<Asignatura> datos;
+    private AdaptadorAsignaturas adapter;
 
     public AsignaturaFragment() {
         // Required empty public constructor
@@ -71,14 +80,34 @@ public class AsignaturaFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_asignatura, container, false);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Asignaturas");
         listView =  view.findViewById(R.id.listViewAsignaturas);
 
-        ArrayList<String> datos = new ArrayList<>();
-        datos.add("Asignatura ejemplo 1");
-        datos.add("Asignatura ejemplo 2");
-        datos.add("Asignatura ejemplo 3");
+        datos = new ArrayList<Asignatura>();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.list_layout,R.id.tvFila,datos);
+        adapter = new AdaptadorAsignaturas(getActivity().getApplicationContext(),datos);
+
+        Thread r = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
+                    List<Asignatura> listaAsignaturas = aDao.getAll();
+                    System.out.println("Tamaño lista asignaturas: "+listaAsignaturas.size());
+                    datos.addAll(listaAsignaturas);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+            }};
+        r.start();
+
         listView.setAdapter(adapter);
 
 
@@ -89,8 +118,10 @@ public class AsignaturaFragment extends Fragment {
             public void onClick(View view) {
                 //Toast.makeText(getApplicationContext(), "Inicio activityForResult de Nueva Asignatura", Toast.LENGTH_SHORT).show();
                 Fragment fragment = new NuevaAsignaturaFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).commit();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
                 ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Nueva Asignatura");
+                //((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                //((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
             }
         });
 

@@ -1,12 +1,26 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.AsignaturaDao;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Asignatura;
 
 
 /**
@@ -33,6 +47,15 @@ public class NuevaAsignaturaFragment extends Fragment {
         // Required empty public constructor
     }
 
+    private Spinner nivelSpinner;
+    private Spinner periodoSpinner;
+
+    private EditText edtNombreAsignatura;
+    private EditText edtAnioAsignatura;
+    private EditText edtProfesorAsignatura;
+    private EditText edtEmailAsignatura;
+    private EditText edtObservacionesAsignatura;
+    private AsignaturaDao aDao;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -58,13 +81,76 @@ public class NuevaAsignaturaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_nueva_asignatura, container, false);
+        View view = inflater.inflate(R.layout.fragment_nueva_asignatura, container, false);
+        cargarSpinnerNivel(view);
+        cargarSpinnerPeriodo(view);
+
+
+        edtNombreAsignatura = (EditText) view.findViewById(R.id.edtNombre);
+        edtAnioAsignatura = (EditText) view.findViewById(R.id.edtAnio);
+        edtEmailAsignatura = (EditText) view.findViewById(R.id.edtEmail);
+        edtProfesorAsignatura = (EditText) view.findViewById(R.id.edtProfesor);
+        edtObservacionesAsignatura = (EditText) view.findViewById(R.id.edtObservaciones);
+
+
+
+        Button button = (Button) view.findViewById(R.id.btnGuardarAsignatura);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if(edtNombreAsignatura.getText().toString().isEmpty() || edtAnioAsignatura.getText().toString().isEmpty() || edtEmailAsignatura.getText().toString().isEmpty() || edtProfesorAsignatura.getText().toString().isEmpty()){
+                    Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
+                }else {
+
+                    //Se guarda la asignatura en la base de datos
+
+                    Thread r = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                int auxPeriodo;
+                                if(periodoSpinner.getSelectedItem().toString()=="1° Cuatrimestre"){
+                                    auxPeriodo=1;
+                                } else if(periodoSpinner.getSelectedItem().toString()=="2° Cuatrimestre"){
+                                    auxPeriodo=2;
+                                }else{
+                                    auxPeriodo=3;
+                                }
+                                Asignatura nueva = new Asignatura(
+                                        edtNombreAsignatura.getText().toString(),Integer.parseInt(edtAnioAsignatura.getText().toString()),
+                                        Integer.parseInt(nivelSpinner.getSelectedItem().toString()), auxPeriodo,
+                                        edtProfesorAsignatura.getText().toString(),edtEmailAsignatura.getText().toString(),edtObservacionesAsignatura.getText().toString()
+                                );
+                                aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
+                                aDao.insert(nueva);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity().getApplicationContext(), "La asignatura se agrego correctamente", Toast.LENGTH_LONG).show();
+                                    edtNombreAsignatura.setText("");
+                                    edtAnioAsignatura.setText("");
+                                    edtEmailAsignatura.setText("");
+                                    edtProfesorAsignatura.setText("");
+                                    edtObservacionesAsignatura.setText("");
+                                }
+                            });
+                        }
+                    };
+                    r.start();
+                }
+
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,4 +191,128 @@ public class NuevaAsignaturaFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    public void cargarSpinnerNivel(View view){
+        ArrayList<String> niveles = new ArrayList<>();
+        niveles.add("Niveles");
+        niveles.add("1");
+        niveles.add("2");
+        niveles.add("3");
+        niveles.add("4");
+        niveles.add("5");
+        nivelSpinner = (Spinner) view.findViewById(R.id.spnNivel);
+        ArrayAdapter<String> nivelAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.support_simple_spinner_dropdown_item, niveles){
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+
+                    return false; // First item will be use for hint
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        //nivelAdapter.setDropDownViewResource(R.layout.spinner_item);
+        nivelSpinner.setAdapter(nivelAdapter);
+
+        nivelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if(position > 0){
+                    // Notify the selected item text
+                    Toast.makeText
+                            (getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    public void cargarSpinnerPeriodo(View view){
+        ArrayList<String> periodos = new ArrayList<>();
+        periodos.add("Periodo");
+        periodos.add("1° Cuatrimestre");
+        periodos.add("2° Cuatrimestre");
+        periodos.add("Anual");
+        periodoSpinner = (Spinner) view.findViewById(R.id.spnPeriodo);
+        ArrayAdapter<String> periodoAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.support_simple_spinner_dropdown_item, periodos){
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+
+                    return false; // First item will be use for hint
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        //nivelAdapter.setDropDownViewResource(R.layout.spinner_item);
+        periodoSpinner.setAdapter(periodoAdapter);
+
+        periodoSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if(position > 0){
+                    // Notify the selected item text
+                    Toast.makeText
+                            (getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+
 }
