@@ -18,6 +18,7 @@ public class MyDatabase {
 
     private MyRoomDatabase db;
     private TareaDao tareaDao;
+    private FotografiaDao fotografiaDao;
 
     // constructor privado para poder implementar SINGLETON
     // al ser privado solo puede ser invocado dentro de esta clase
@@ -31,6 +32,7 @@ public class MyDatabase {
                 .fallbackToDestructiveMigration()
                 .build();
         tareaDao = db.tareaDao();
+        fotografiaDao = db.fotografiaDao();
 
     }
     public void borrarTodo(){
@@ -41,7 +43,15 @@ public class MyDatabase {
         return tareaDao;
     }
 
+    public FotografiaDao getFotografiaDao() {
+        return fotografiaDao;
+    }
+
     public void setTareaDaoDao(TareaDao tareaDao) {
         this.tareaDao = tareaDao;
+    }
+
+    public void setFotoDao(FotografiaDao fotoDao) {
+        this.fotografiaDao = fotoDao;
     }
 }

@@ -91,7 +91,7 @@ public class TareasFragment extends Fragment {
             public void run() {
                 try {
                     tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
-                    List<Tarea> listaTareas = tdao.getAll();;
+                    List<Tarea> listaTareas = tdao.getAll();
                     datos.addAll(listaTareas);
                     adapter.notifyDataSetChanged();
                 } catch (Exception e) {

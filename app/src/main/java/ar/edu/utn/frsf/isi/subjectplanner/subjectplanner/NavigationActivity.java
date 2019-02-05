@@ -25,7 +25,7 @@ import android.widget.Toast;
 //Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
-                    , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener{
+                    , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener{
 
 
 
@@ -80,7 +80,7 @@ public class NavigationActivity extends AppCompatActivity
 
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Funcionalidad en desarollo", Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -106,7 +106,7 @@ public class NavigationActivity extends AppCompatActivity
             fragment = new AsignaturaFragment();
 
         } else if (id == R.id.navProfesores) { //Boton Profesores
-            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Funcionalidad en desarollo", Toast.LENGTH_LONG).show();
 
         } else if (id == R.id.navTareas) { //Boton Tareas
             fragmentoSeleccionado=true;
@@ -114,10 +114,12 @@ public class NavigationActivity extends AppCompatActivity
             fragment = new TareasFragment();
 
         } else if (id == R.id.navPromedios) { //Boton Promedios
-            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+            Toast.makeText(this,"Funcionalidad en desarollo", Toast.LENGTH_LONG).show();
 
         } else if (id == R.id.navFotografias) { //Boton Fotografias
-            Toast.makeText(this,"En desarollo", Toast.LENGTH_LONG).show();
+            fragmentoSeleccionado=true;
+            getSupportActionBar().setTitle("Fotografías");
+            fragment = new FotografiasFragment();
 
         } else if (id == R.id.navAbout) { //Boton Sobre SubjectPlanner
             fragmentoSeleccionado=true;
