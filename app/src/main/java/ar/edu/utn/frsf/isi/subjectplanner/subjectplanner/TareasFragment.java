@@ -84,6 +84,7 @@ public class TareasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_tareas, container, false);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Tareas");
         lista = view.findViewById(R.id.listViewTareas);
         lista.setEmptyView(view.findViewById(R.id.textViewVacio));
         final ArrayList<Tarea> datos = new ArrayList<Tarea>();
@@ -116,7 +117,6 @@ public class TareasFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Fragment fragment = new NuevaTareaFragment();
                 ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment, "editarTarea").addToBackStack(null).commit();
-                ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Editar tarea");
                 ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
                 comunicador.responder(datos.get(position));
             }
@@ -135,7 +135,7 @@ public class TareasFragment extends Fragment {
                 //Toast.makeText(getActivity().getApplicationContext(), "ME MUEVO A NUEVA TAREA",Toast.LENGTH_SHORT).show();
                 Fragment fragment = new NuevaTareaFragment();
                 ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
-                ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Crear nueva tarea");
+
             }
         });
 

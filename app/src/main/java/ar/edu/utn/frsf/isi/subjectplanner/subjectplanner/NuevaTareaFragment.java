@@ -71,10 +71,11 @@ public class NuevaTareaFragment extends Fragment {
     private TextInputLayout horaLayout;
     private boolean tocoDia;
     private boolean tocoHora;
+    private Button buttonEliminar;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Crear nueva tarea");
         View view = inflater.inflate(R.layout.fragment_nueva_tarea, container, false);
         swAvisar = (Switch) view.findViewById(R.id.switchAvisar);
         edtnombre = (EditText) view.findViewById(R.id.TextInputEditTextNombre);
@@ -83,8 +84,11 @@ public class NuevaTareaFragment extends Fragment {
         nombreLayout = view.findViewById(R.id.TextInputLayoutNombre);
         diaLayout = view.findViewById(R.id.TextInputLayoutDia);
         horaLayout = view.findViewById(R.id.TextInputLayoutHora);
+        buttonEliminar = view.findViewById(R.id.buttonEliminar);
         tocoDia=false;
         tocoHora = false;
+        buttonEliminar.setVisibility(View.INVISIBLE);
+
 
         //Cambio el icono del menu lateral por una X  NO ANDA
         /*((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -155,12 +159,13 @@ public class NuevaTareaFragment extends Fragment {
 
 
         //Acciones cuando se presiona el boton guardar
-        Button button = (Button) view.findViewById(R.id.buttonGuardar);
-        button.setOnClickListener(new View.OnClickListener() {
+        final Button buttonGuardar = (Button) view.findViewById(R.id.buttonGuardar);
+        buttonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
                     Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
+                    buttonEliminar.setEnabled(false);
                     //Obtengo el valor del switch
                     if(swAvisar.isChecked()) avisar=1;
                     else avisar=0;
@@ -227,6 +232,43 @@ public class NuevaTareaFragment extends Fragment {
 
             }
         });
+
+
+        //Acciones si se presiona el boton eliminar
+        buttonEliminar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonGuardar.setEnabled(false);
+                if(tarea!=null){
+                    Thread r = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                                tdao.delete(tarea);
+                                tarea=null;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity().getApplicationContext(), "La tarea se elimino correctamente", Toast.LENGTH_LONG).show();
+                                    edtnombre.setText("");
+                                    edtDia.setText("");
+                                    edtHora.setText("");
+                                    buttonEliminar.setEnabled(false);
+                                }
+                            });
+                        }
+                    };
+                    r.start();
+                }else  Toast.makeText(getActivity().getApplicationContext(), "Error, la tarea no existe", Toast.LENGTH_LONG).show();
+
+
+
+            }});
+
+
         return view;
     }
 
@@ -271,7 +313,7 @@ public class NuevaTareaFragment extends Fragment {
 
     public void editarTarea(Tarea t) {
         this.tarea = t;
-
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Editar tarea");
         //Muestro los datos de la tarea por pantalla
         nombreLayout.setHintAnimationEnabled(false);
         edtnombre.setText(tarea.getNombre());
@@ -282,7 +324,7 @@ public class NuevaTareaFragment extends Fragment {
         if(tarea.getAvisar()==1){
             swAvisar.setChecked(true);
         }
-
+        buttonEliminar.setVisibility(View.VISIBLE);
 
 
     }

@@ -112,7 +112,6 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.navTareas) { //Boton Tareas
             fragmentoSeleccionado=true;
-            getSupportActionBar().setTitle("Tareas");
             fragment = new TareasFragment();
 
         } else if (id == R.id.navPromedios) { //Boton Promedios
