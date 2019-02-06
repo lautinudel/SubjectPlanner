@@ -1,11 +1,15 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -31,14 +35,8 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.TareaDao;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NuevaTareaFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NuevaTareaFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
+
 public class NuevaTareaFragment extends Fragment {
 
 
@@ -72,6 +70,9 @@ public class NuevaTareaFragment extends Fragment {
     private boolean tocoDia;
     private boolean tocoHora;
     private Button buttonEliminar;
+    private Intent myIntent;
+    private PendingIntent myPendingIntent;
+    private AlarmManager manager;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,6 +89,10 @@ public class NuevaTareaFragment extends Fragment {
         tocoDia=false;
         tocoHora = false;
         buttonEliminar.setVisibility(View.INVISIBLE);
+
+
+        manager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        myIntent = new Intent(getActivity().getApplicationContext(), AlarmNotificationReceiver.class);
 
 
         //Cambio el icono del menu lateral por una X  NO ANDA
@@ -162,6 +167,7 @@ public class NuevaTareaFragment extends Fragment {
         final Button buttonGuardar = (Button) view.findViewById(R.id.buttonGuardar);
         buttonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                buttonGuardar.setEnabled(false);
                 if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
                     Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
@@ -169,6 +175,7 @@ public class NuevaTareaFragment extends Fragment {
                     //Obtengo el valor del switch
                     if(swAvisar.isChecked()) avisar=1;
                     else avisar=0;
+
                     if(tarea!=null){   //Tarea editada
                         if(!tocoDia){
                          dia = tarea.getDia();
@@ -184,9 +191,33 @@ public class NuevaTareaFragment extends Fragment {
                             @Override
                             public void run() {
                                 try {
+                                    int avisarAntes = tarea.getAvisar();
                                     tarea.setearDatos(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
                                     tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
                                     tdao.update(tarea);
+                                    myIntent.putExtra("nombre", tarea.getNombre());
+                                    myPendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), tarea.getTiempoCreacion(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    if(avisarAntes==0 && avisar==1){ //Crear alarma
+
+                                        //Seteo la alarma el dia y hora seleccionado
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.setTimeInMillis(System.currentTimeMillis());
+                                        cal.clear();
+                                        cal.set(tarea.getAnio(),tarea.getMes()-1,tarea.getDia(),tarea.getHora(),tarea.getMinutos());
+                                        manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
+                                    }else if(avisarAntes==1 && avisar==0){ //Borrar alarma
+                                        manager.cancel(myPendingIntent);
+                                    }else if(avisarAntes ==1 && avisar==1){ //Puede cambiar el dia o la hora => tengo que editar la alarma
+                                       manager.cancel(myPendingIntent);
+                                        //Seteo la alarma el dia y hora seleccionado
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.setTimeInMillis(System.currentTimeMillis());
+                                        cal.clear();
+                                        cal.set(tarea.getAnio(),tarea.getMes()-1,tarea.getDia(),tarea.getHora(),tarea.getMinutos());
+                                        manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
+                                    }
+
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -208,9 +239,21 @@ public class NuevaTareaFragment extends Fragment {
                             @Override
                             public void run() {
                                 try {
-                                    Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
+                                    Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar,(int) (long)System.currentTimeMillis());
                                     tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
                                     tdao.insert(nuevaTarea);
+                                    if(avisar==1){ //Creo la alarma
+                                        myIntent.putExtra("nombre", nuevaTarea.getNombre());
+                                        myPendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(),nuevaTarea.getTiempoCreacion(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                        //Seteo la alarma el dia y hora seleccionado
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.setTimeInMillis(System.currentTimeMillis());
+                                        cal.clear();
+                                        cal.set(nuevaTarea.getAnio(),nuevaTarea.getMes()-1,nuevaTarea.getDia(),nuevaTarea.getHora(),nuevaTarea.getMinutos());
+                                        manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
+                                    }
+
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
