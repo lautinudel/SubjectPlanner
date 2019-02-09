@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/ivFotoActual"
-        android:layout_width="215dp"
-        android:layout_height="315dp"
-        android:layout_gravity="center_horizontal"
-        android:background="#cfcfcf"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp" />
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <GridView
+        android:id="@+id/gvFotos"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerVertical="true"
+        android:numColumns="auto_fit"
+        android:columnWidth="100dp"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp"
+        android:stretchMode="spacingWidthUniform"
+        android:layout_centerHorizontal="true"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addFoto"
@@ -25,4 +27,6 @@
         android:layout_alignParentBottom="true"
 
         android:src="@drawable/ic_photo_camera_black_24dp" />
-</LinearLayout>
+
+
+</RelativeLayout>

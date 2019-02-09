@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_drawer_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ViewImage"></activity>
         <activity
             android:name=".NavigationActivity"
             android:exported="true"
@@ -42,7 +43,7 @@
         <receiver
             android:name=".AlarmNotificationReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
     </application>
 
 </manifest>
