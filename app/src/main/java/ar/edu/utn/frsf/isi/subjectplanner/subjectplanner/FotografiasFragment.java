@@ -1,13 +1,9 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -22,7 +18,8 @@ import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Gallery;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -32,12 +29,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.FotografiaDao;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Fotografia;
-import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -58,9 +53,10 @@ public class FotografiasFragment extends Fragment {
     static final int REQUEST_IMAGE_SAVE = 2;
     private List<Fotografia> listaFotografias = new ArrayList<Fotografia>();
     private List<Drawable> listaDrawables = new ArrayList<Drawable>();
+    private ArrayList<File> imageFiles = new ArrayList<>();
     private Fotografia foto = new Fotografia();
-    private FotografiaDao fdao, fdao2;
-    public int contador = 0;
+    private FotografiaDao fdao;
+
     public FotografiasFragment() {
         // Required empty public constructor
     }
@@ -70,6 +66,40 @@ public class FotografiasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_fotografias, container, false);
+        final GridView gv = (GridView) v.findViewById(R.id.gvFotos);
+
+        final AdaptadorImagenes adapter = new AdaptadorImagenes(getActivity().getApplicationContext(), imageFiles);
+        Thread r = new Thread() {
+            @Override
+            public void run() {
+                try {
+
+                    //Obtenemos la lista de fotografías de la BDD.
+                    FotografiasFragment.this.listaFotografias = MyDatabase.getInstance(getActivity()).getFotografiaDao().getAll();
+
+                    for (Fotografia elem : listaFotografias) {
+                        File f = new File(elem.pathFoto);
+                        FotografiasFragment.this.imageFiles.add(f);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+
+                });
+
+            }
+        };
+        r.start();
+        gv.setAdapter(adapter);
+
+
 
         //Boton tomar foto.
         FloatingActionButton fabFoto = (FloatingActionButton) v.findViewById(R.id.addFoto);
@@ -86,8 +116,16 @@ public class FotografiasFragment extends Fragment {
             }
         });
 
-        generarDrawables();
-        
+        //Seleccion de un single_grid.
+        gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(getContext(), ViewImage.class).putExtra("img",imageFiles.get(position).toString()));
+            }
+        });
+
+
+
         return v;
     }
 
@@ -158,10 +196,8 @@ public class FotografiasFragment extends Fragment {
     }
 
 
-
+/*
     public void generarDrawables () {
-        final ArrayList<Fotografia> datos = new ArrayList<Fotografia>();
-
 
         Thread r = new Thread() {
             @Override
@@ -179,7 +215,6 @@ public class FotografiasFragment extends Fragment {
                         d = Drawable.createFromPath(path);
                         FotografiasFragment.this.listaDrawables.add(d);
                     }
-                    System.out.println("TAMANIOOOOOOOOOOOOO DRAWABLESLIST: " + listaDrawables.size());
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -188,10 +223,7 @@ public class FotografiasFragment extends Fragment {
         };
         r.start();
     }
-
-
-
-
+*/
 
 
 

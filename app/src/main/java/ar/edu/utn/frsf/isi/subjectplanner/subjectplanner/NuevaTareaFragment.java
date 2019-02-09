@@ -1,11 +1,15 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -31,14 +35,8 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.TareaDao;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NuevaTareaFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NuevaTareaFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
+
 public class NuevaTareaFragment extends Fragment {
 
 
@@ -72,6 +70,10 @@ public class NuevaTareaFragment extends Fragment {
     private boolean tocoDia;
     private boolean tocoHora;
     private Button buttonEliminar;
+    private Intent myIntent;
+    private PendingIntent myPendingIntent;
+    private AlarmManager manager;
+    private Calendar cal;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,6 +90,10 @@ public class NuevaTareaFragment extends Fragment {
         tocoDia=false;
         tocoHora = false;
         buttonEliminar.setVisibility(View.INVISIBLE);
+
+
+        manager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        myIntent = new Intent(getActivity().getApplicationContext(), AlarmNotificationReceiver.class);
 
 
         //Cambio el icono del menu lateral por una X  NO ANDA
@@ -165,11 +171,12 @@ public class NuevaTareaFragment extends Fragment {
                 if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
                     Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
-                    buttonEliminar.setEnabled(false);
+
                     //Obtengo el valor del switch
                     if(swAvisar.isChecked()) avisar=1;
                     else avisar=0;
-                    if(tarea!=null){   //Tarea editada
+
+                    if(tarea!=null){//Tarea editada
                         if(!tocoDia){
                          dia = tarea.getDia();
                          mes = tarea.getMes();
@@ -179,53 +186,100 @@ public class NuevaTareaFragment extends Fragment {
                             hora = tarea.getHora();
                             minutos = tarea.getMinutos();
                         }
-                        //Guardo la tarea editada
-                        Thread r = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    tarea.setearDatos(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
-                                    tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
-                                    tdao.update(tarea);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(), "La tarea se edito correctamente", Toast.LENGTH_LONG).show();
-                                        edtnombre.setText("");
-                                        edtDia.setText("");
-                                        edtHora.setText("");
+
+                        //Obtengo la fecha que selecciono el usuario
+                        cal = Calendar.getInstance();
+                        cal.setTimeInMillis(System.currentTimeMillis());
+                        cal.clear();
+                        cal.set(anio,mes-1,dia,hora,minutos);
+                        //Veo si la fecha/hora seleccionada es anterior a la actual
+                        if(cal.before(Calendar.getInstance())){
+                            Toast.makeText(getActivity().getApplicationContext(),"El horario es incorrecto",Toast.LENGTH_SHORT).show();
+                        }else{
+                            buttonGuardar.setEnabled(false);
+                            buttonEliminar.setEnabled(false);
+                            //Guardo la tarea editada
+                            Thread r = new Thread() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        int avisarAntes = tarea.getAvisar();
+                                        tarea.setearDatos(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
+                                        tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                                        tdao.update(tarea);
+                                        myIntent.putExtra("nombre", tarea.getNombre());
+                                        myPendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), tarea.getTiempoCreacion(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        if(avisarAntes==0 && avisar==1){ //Crear alarma
+                                            manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
+                                        }else if(avisarAntes==1 && avisar==0){ //Borrar alarma
+                                            manager.cancel(myPendingIntent);
+                                        }else if(avisarAntes ==1 && avisar==1){ //Puede cambiar el dia o la hora => tengo que editar la alarma
+                                            manager.cancel(myPendingIntent);
+                                            manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
+                                        }
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            }
-                        };
-                        r.start();
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getActivity().getApplicationContext(), "La tarea se edito correctamente", Toast.LENGTH_LONG).show();
+                                            edtnombre.setText("");
+                                            edtDia.setText("");
+                                            edtHora.setText("");
+                                        }
+                                    });
+                                }
+                            };
+                            r.start();
+                        }
                     }else{  //Tarea nueva
-                        //Guardo la tarea en la bd
-                        Thread r = new Thread() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar);
-                                    tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
-                                    tdao.insert(nuevaTarea);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(), "La tarea se agrego correctamente", Toast.LENGTH_LONG).show();
-                                        edtnombre.setText("");
-                                        edtDia.setText("");
-                                        edtHora.setText("");
+                        //Obtengo la fecha que selecciono el usuario
+                        cal = Calendar.getInstance();
+                        cal.setTimeInMillis(System.currentTimeMillis());
+                        cal.clear();
+                        cal.set(anio,mes-1,dia,hora,minutos);
+                        //Veo si la fecha/hora seleccionada es anterior a la actual
+                        if(cal.before(Calendar.getInstance())){
+                            Toast.makeText(getActivity().getApplicationContext(),"El horario es incorrecto",Toast.LENGTH_SHORT).show();
+                        }else{
+                            buttonGuardar.setEnabled(false);
+                            buttonEliminar.setEnabled(false);
+                            //Guardo la tarea en la bd
+                            Thread r = new Thread() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        Tarea nuevaTarea = new Tarea(edtnombre.getText().toString(), dia, mes, anio, hora, minutos, avisar,(int) (long)System.currentTimeMillis());
+                                        tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
+                                        tdao.insert(nuevaTarea);
+                                        if(avisar==1){ //Creo la alarma
+                                            myIntent.putExtra("nombre", nuevaTarea.getNombre());
+                                            myPendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(),nuevaTarea.getTiempoCreacion(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                                            //Seteo la alarma el dia y hora seleccionado
+                                            manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                });
-                            }
-                        };
-                        r.start();
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getActivity().getApplicationContext(), "La tarea se agrego correctamente", Toast.LENGTH_LONG).show();
+                                            edtnombre.setText("");
+                                            edtDia.setText("");
+                                            edtHora.setText("");
+                                        }
+                                    });
+                                }
+                            };
+                            r.start();
+                        }
+
                     }
 
                 }

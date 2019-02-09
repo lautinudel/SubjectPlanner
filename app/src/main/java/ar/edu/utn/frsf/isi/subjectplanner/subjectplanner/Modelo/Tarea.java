@@ -15,8 +15,9 @@ public class Tarea {
     public int hora;
     public int minutos;
     public int avisar;
+    public int tiempoCreacion; //Id Segundo
 
-    public Tarea(String nombre, int dia, int mes, int anio, int hora, int minutos, int avisar) {
+    public Tarea(String nombre, int dia, int mes, int anio, int hora, int minutos, int avisar, int tiempoCreacion) {
         this.nombre = nombre;
         this.dia = dia;
         this.mes = mes;
@@ -24,6 +25,15 @@ public class Tarea {
         this.hora = hora;
         this.minutos = minutos;
         this.avisar = avisar;
+        this.tiempoCreacion=tiempoCreacion;
+    }
+
+    public int getTiempoCreacion() {
+        return tiempoCreacion;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNombre() {
