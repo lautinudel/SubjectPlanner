@@ -50,12 +50,19 @@ public class NuevaAsignaturaFragment extends Fragment {
     private Spinner nivelSpinner;
     private Spinner periodoSpinner;
 
+    private Asignatura asignatura;
+
     private EditText edtNombreAsignatura;
     private EditText edtAnioAsignatura;
     private EditText edtProfesorAsignatura;
     private EditText edtEmailAsignatura;
     private EditText edtObservacionesAsignatura;
     private AsignaturaDao aDao;
+    private Button btnModificar;
+    private Button btnEliminar;
+    private Button btnEvaluaciones;
+    private Button btnGuardarAsignatura;
+    private Boolean editar;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -92,64 +99,184 @@ public class NuevaAsignaturaFragment extends Fragment {
         cargarSpinnerNivel(view);
         cargarSpinnerPeriodo(view);
 
-
+        editar=false;
         edtNombreAsignatura = (EditText) view.findViewById(R.id.edtNombre);
         edtAnioAsignatura = (EditText) view.findViewById(R.id.edtAnio);
         edtEmailAsignatura = (EditText) view.findViewById(R.id.edtEmail);
         edtProfesorAsignatura = (EditText) view.findViewById(R.id.edtProfesor);
         edtObservacionesAsignatura = (EditText) view.findViewById(R.id.edtObservaciones);
+        btnEliminar = (Button) view.findViewById(R.id.btnEliminar);
+        btnEvaluaciones = (Button) view.findViewById(R.id.btnEvaluacion);
+        btnModificar = (Button) view.findViewById(R.id.btnModificar);
+        btnEliminar.setVisibility(View.INVISIBLE);
+        btnEvaluaciones.setVisibility(View.INVISIBLE);
+        btnModificar.setVisibility(View.INVISIBLE);
 
 
-
-        Button button = (Button) view.findViewById(R.id.btnGuardarAsignatura);
-        button.setOnClickListener(new View.OnClickListener() {
+        btnGuardarAsignatura = (Button) view.findViewById(R.id.btnGuardarAsignatura);
+        btnGuardarAsignatura.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(edtNombreAsignatura.getText().toString().isEmpty() || edtAnioAsignatura.getText().toString().isEmpty() || edtEmailAsignatura.getText().toString().isEmpty() || edtProfesorAsignatura.getText().toString().isEmpty()){
                     Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
-
-                    //Se guarda la asignatura en la base de datos
-
-                    Thread r = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                int auxPeriodo;
-                                if(periodoSpinner.getSelectedItem().toString()=="1° Cuatrimestre"){
-                                    auxPeriodo=1;
-                                } else if(periodoSpinner.getSelectedItem().toString()=="2° Cuatrimestre"){
-                                    auxPeriodo=2;
-                                }else{
-                                    auxPeriodo=3;
+                    if(editar==false) {
+                        //Se guarda la asignatura en la base de datos
+                        Thread r = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    int auxPeriodo;
+                                    if (periodoSpinner.getSelectedItem().toString() == "1° Cuatrimestre") {
+                                        auxPeriodo = 1;
+                                    } else if (periodoSpinner.getSelectedItem().toString() == "2° Cuatrimestre") {
+                                        auxPeriodo = 2;
+                                    } else {
+                                        auxPeriodo = 3;
+                                    }
+                                    Asignatura nueva = new Asignatura(
+                                            edtNombreAsignatura.getText().toString(), Integer.parseInt(edtAnioAsignatura.getText().toString()),
+                                            Integer.parseInt(nivelSpinner.getSelectedItem().toString()), auxPeriodo,
+                                            edtProfesorAsignatura.getText().toString(), edtEmailAsignatura.getText().toString(), edtObservacionesAsignatura.getText().toString()
+                                    );
+                                    aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
+                                    aDao.insert(nueva);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                                Asignatura nueva = new Asignatura(
-                                        edtNombreAsignatura.getText().toString(),Integer.parseInt(edtAnioAsignatura.getText().toString()),
-                                        Integer.parseInt(nivelSpinner.getSelectedItem().toString()), auxPeriodo,
-                                        edtProfesorAsignatura.getText().toString(),edtEmailAsignatura.getText().toString(),edtObservacionesAsignatura.getText().toString()
-                                );
-                                aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
-                                aDao.insert(nueva);
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "La asignatura se agregó correctamente", Toast.LENGTH_LONG).show();
+                                        edtNombreAsignatura.setText("");
+                                        edtAnioAsignatura.setText("");
+                                        edtEmailAsignatura.setText("");
+                                        edtProfesorAsignatura.setText("");
+                                        edtObservacionesAsignatura.setText("");
+                                    }
+                                });
                             }
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "La asignatura se agrego correctamente", Toast.LENGTH_LONG).show();
-                                    edtNombreAsignatura.setText("");
-                                    edtAnioAsignatura.setText("");
-                                    edtEmailAsignatura.setText("");
-                                    edtProfesorAsignatura.setText("");
-                                    edtObservacionesAsignatura.setText("");
+                        };
+                        r.start();
+                    }else{
+
+                        Thread r = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    int auxPeriodo;
+                                    if (periodoSpinner.getSelectedItem().toString() == "1° Cuatrimestre") {
+                                        auxPeriodo = 1;
+                                    } else if (periodoSpinner.getSelectedItem().toString() == "2° Cuatrimestre") {
+                                        auxPeriodo = 2;
+                                    } else {
+                                        auxPeriodo = 3;
+                                    }
+                                    asignatura.setValues(
+                                            edtNombreAsignatura.getText().toString(), Integer.parseInt(edtAnioAsignatura.getText().toString()),
+                                            Integer.parseInt(nivelSpinner.getSelectedItem().toString()), auxPeriodo,
+                                            edtProfesorAsignatura.getText().toString(), edtEmailAsignatura.getText().toString(), edtObservacionesAsignatura.getText().toString()
+                                    );
+                                    aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
+                                    aDao.update(asignatura);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            });
-                        }
-                    };
-                    r.start();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "La asignatura se modificó correctamente", Toast.LENGTH_LONG).show();
+                                        edtNombreAsignatura.setEnabled(false);
+                                        edtAnioAsignatura.setEnabled(false);
+                                        edtProfesorAsignatura.setEnabled(false);
+                                        edtEmailAsignatura.setEnabled(false);
+                                        periodoSpinner.setEnabled(false);
+                                        nivelSpinner.setEnabled(false);
+                                        edtObservacionesAsignatura.setEnabled(false);
+                                        btnModificar.setEnabled(true);
+                                        btnEvaluaciones.setEnabled(true);
+                                        btnEliminar.setEnabled(true);
+                                        btnModificar.setVisibility(View.VISIBLE);
+                                        btnEvaluaciones.setVisibility(View.VISIBLE);
+                                        btnEliminar.setVisibility(View.VISIBLE);
+                                        btnGuardarAsignatura.setEnabled(false);
+                                    }
+                                });
+                            }
+                        };
+                        r.start();
+                    }
                 }
 
             }
         });
+
+        btnModificar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                edtNombreAsignatura.setEnabled(true);
+                edtAnioAsignatura.setEnabled(true);
+                edtProfesorAsignatura.setEnabled(true);
+                edtEmailAsignatura.setEnabled(true);
+                periodoSpinner.setEnabled(true);
+                nivelSpinner.setEnabled(true);
+                edtObservacionesAsignatura.setEnabled(true);
+                btnGuardarAsignatura.setEnabled(true);
+                btnModificar.setEnabled(false);
+                btnEvaluaciones.setEnabled(false);
+                btnEliminar.setEnabled(false);
+                editar=true;
+            }
+        });
+
+
+        btnEvaluaciones.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Fragment fragment = new EvaluacionFragment();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
+
+            }
+        });
+
+        btnEliminar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Thread r = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            /*int auxPeriodo;
+                            if (periodoSpinner.getSelectedItem().toString() == "1° Cuatrimestre") {
+                                auxPeriodo = 1;
+                            } else if (periodoSpinner.getSelectedItem().toString() == "2° Cuatrimestre") {
+                                auxPeriodo = 2;
+                            } else {
+                                auxPeriodo = 3;
+                            }
+                            Asignatura nueva = new Asignatura(
+                                    edtNombreAsignatura.getText().toString(), Integer.parseInt(edtAnioAsignatura.getText().toString()),
+                                    Integer.parseInt(nivelSpinner.getSelectedItem().toString()), auxPeriodo,
+                                    edtProfesorAsignatura.getText().toString(), edtEmailAsignatura.getText().toString(), edtObservacionesAsignatura.getText().toString()
+                            );*/
+                            aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
+                            aDao.delete(asignatura);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity().getApplicationContext(), "La asignatura se eliminó correctamente", Toast.LENGTH_LONG).show();
+                                edtNombreAsignatura.setText("");
+                                edtAnioAsignatura.setText("");
+                                edtEmailAsignatura.setText("");
+                                edtProfesorAsignatura.setText("");
+                                edtObservacionesAsignatura.setText("");
+                            }
+                        });
+                    }
+                };
+                r.start();
+            }
+        });
+
         return view;
     }
 
@@ -314,5 +441,54 @@ public class NuevaAsignaturaFragment extends Fragment {
         });
     }
 
+    public void editarAsignatura(Asignatura asignatura){
+        this.asignatura=asignatura;
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Editar asignatura");
+        edtNombreAsignatura.setText(asignatura.getNombre());
+        edtAnioAsignatura.setText(String.valueOf(asignatura.getAnio()));
+        edtProfesorAsignatura.setText(asignatura.getProfesor());
+        edtEmailAsignatura.setText(asignatura.getEmail());
+        edtObservacionesAsignatura.setText(asignatura.getObservaciones());
+        nivelSpinner.setSelection(getIndex(nivelSpinner, String.valueOf(asignatura.getNivel())));
+        String aux="";
+        switch (asignatura.getPeriodo()){
+            case 1:
+                aux="1° Cuatrimestre";
+                break;
+            case 2:
+                aux="2° Cuatrimestre";
+                break;
+            case 3:
+                aux="Anual";
+                break;
+        }
+        periodoSpinner.setSelection(getIndex(periodoSpinner, aux));
+        edtNombreAsignatura.setEnabled(false);
+        edtAnioAsignatura.setEnabled(false);
+        edtProfesorAsignatura.setEnabled(false);
+        edtEmailAsignatura.setEnabled(false);
+        periodoSpinner.setEnabled(false);
+        nivelSpinner.setEnabled(false);
+        edtObservacionesAsignatura.setEnabled(false);
+        btnModificar.setEnabled(true);
+        btnEvaluaciones.setEnabled(true);
+        btnEliminar.setEnabled(true);
+        btnModificar.setVisibility(View.VISIBLE);
+        btnEvaluaciones.setVisibility(View.VISIBLE);
+        btnEliminar.setVisibility(View.VISIBLE);
+        btnGuardarAsignatura.setEnabled(false);
 
+    }
+
+    private int getIndex(Spinner spinner, String myString){
+
+        int index = 0;
+
+        for (int i=0;i<spinner.getCount();i++){
+            if (spinner.getItemAtPosition(i).equals(myString)){
+                index = i;
+            }
+        }
+        return index;
+    }
 }

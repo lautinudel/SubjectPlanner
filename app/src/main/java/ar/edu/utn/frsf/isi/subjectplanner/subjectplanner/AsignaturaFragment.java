@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -43,6 +44,7 @@ public class AsignaturaFragment extends Fragment {
     private AsignaturaDao aDao;
     private ArrayList<Asignatura> datos;
     private AdaptadorAsignaturas adapter;
+    private Comunicador comunicador;
 
     public AsignaturaFragment() {
         // Required empty public constructor
@@ -73,6 +75,7 @@ public class AsignaturaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        comunicador= (Comunicador)getActivity();
     }
 
     @Override
@@ -109,6 +112,16 @@ public class AsignaturaFragment extends Fragment {
         r.start();
 
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Fragment fragment = new NuevaAsignaturaFragment();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment, "editarAsignatura").addToBackStack(null).commit();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
+                comunicador.pasarAsignatura(datos.get(position));
+            }
+        });
 
 
         //Botón flotante para añadir asignaturas

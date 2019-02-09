@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Asignatura;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 
@@ -27,7 +28,8 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 //Despues de implements hay que agregar los fragmentos nuevos
 public class NavigationActivity extends AppCompatActivity
         implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
-                    , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener{
+                    , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener,
+                    EvaluacionFragment.OnFragmentInteractionListener{
 
 
 
@@ -149,6 +151,12 @@ public class NavigationActivity extends AppCompatActivity
     public void responder(Tarea tarea) {
         NuevaTareaFragment fragment = (NuevaTareaFragment) getSupportFragmentManager().findFragmentByTag("editarTarea");
         fragment.editarTarea(tarea);
+    }
+
+    @Override
+    public void pasarAsignatura(Asignatura asignatura) {
+        NuevaAsignaturaFragment fragment = (NuevaAsignaturaFragment) getSupportFragmentManager().findFragmentByTag("editarAsignatura");
+        fragment.editarAsignatura(asignatura);
     }
     /*@Override
     public boolean onSupportNavigateUp() {

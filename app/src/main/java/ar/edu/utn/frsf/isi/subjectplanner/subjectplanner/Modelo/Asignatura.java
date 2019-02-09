@@ -92,5 +92,14 @@ public class Asignatura {
         this.observaciones = observaciones;
     }
 
+    public void setValues(String nombre, int anio, int nivel, int periodo, String profesor, String email, String observaciones) {
+        this.nombre = nombre;
+        this.anio = anio;
+        this.nivel = nivel;
+        this.periodo = periodo;
+        this.profesor = profesor;
+        this.email = email;
+        this.observaciones = observaciones;
+    }
 
 }

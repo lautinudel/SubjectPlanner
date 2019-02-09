@@ -84,6 +84,27 @@
             android:layout_height="wrap_content"
             android:text="GUARDAR" />
 
+        <Button
+            android:id="@+id/btnModificar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MODIFICAR"
+            tools:text="MODIFICAR" />
+
+        <Button
+            android:id="@+id/btnEvaluacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VER EVALUACIONES"
+            tools:text="VER EVALUACIONES" />
+
+        <Button
+            android:id="@+id/btnEliminar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ELIMINAR"
+            tools:text="ELIMINAR" />
+
 
     </LinearLayout>
     </RelativeLayout>
