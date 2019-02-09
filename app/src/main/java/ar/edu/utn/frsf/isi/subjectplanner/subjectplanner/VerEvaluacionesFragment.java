@@ -95,7 +95,10 @@ public class VerEvaluacionesFragment extends Fragment {
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //agregar nota de la evaluacion
+                Fragment fragment = new IngresarNotaEvFragment();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment,"agregarNota").addToBackStack(null).commit();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
+                comunicador.pasarEvaluacion(datos.get(position));
 
             }
         });

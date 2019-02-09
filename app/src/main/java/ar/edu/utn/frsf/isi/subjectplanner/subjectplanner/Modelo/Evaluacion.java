@@ -20,6 +20,19 @@ public class Evaluacion {
     public Asignatura asignatura;
     public int notaRegularidad;
     public int notaPromocion;
+    public int notaObtenida;
+
+    public void setMinutos(int minutos) {
+        this.minutos = minutos;
+    }
+
+    public void setNotaObtenida(int notaObtenida) {
+        this.notaObtenida = notaObtenida;
+    }
+
+    public int getNotaObtenida() {
+        return notaObtenida;
+    }
 
     public int getMinutos() {
         return minutos;
@@ -37,6 +50,7 @@ public class Evaluacion {
         this.asignatura = asignatura;
         this.notaRegularidad = notaRegularidad;
         this.notaPromocion = notaPromocion;
+        this.notaObtenida=0;
     }
 
     public int getAvisar() {

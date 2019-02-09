@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Asignatura;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Evaluacion;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 
 
@@ -29,7 +30,7 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 public class NavigationActivity extends AppCompatActivity
         implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener,
-                    EvaluacionFragment.OnFragmentInteractionListener, VerEvaluacionesFragment.OnFragmentInteractionListener{
+                    EvaluacionFragment.OnFragmentInteractionListener, VerEvaluacionesFragment.OnFragmentInteractionListener, IngresarNotaEvFragment.OnFragmentInteractionListener{
 
 
 
@@ -169,6 +170,12 @@ public class NavigationActivity extends AppCompatActivity
     public void pasarAsignaturasListaEvaluacion(Asignatura asignatura) {
         VerEvaluacionesFragment fragment = (VerEvaluacionesFragment) getSupportFragmentManager().findFragmentByTag("verEvaluacion");
         fragment.agregarAsignatura(asignatura);
+    }
+
+    @Override
+    public void pasarEvaluacion(Evaluacion evaluacion) {
+        IngresarNotaEvFragment fragment = (IngresarNotaEvFragment) getSupportFragmentManager().findFragmentByTag("agregarNota");
+        fragment.agregarNota(evaluacion);
     }
 
 

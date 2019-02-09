@@ -30,7 +30,7 @@ public class AdaptadorEvaluaciones extends BaseAdapter {
         TextView dia = (TextView) vista.findViewById(R.id.textViewDiaEv);
         TextView hora = (TextView) vista.findViewById(R.id.textViewHoraEv);
         TextView avisar = (TextView) vista.findViewById(R.id.textViewAvisarEv);
-        System.out.println(datos.size());
+        
         titulo.setText(datos.get(i).getNombre().toString());
         dia.setText(datos.get(i).getDia()+"/"+datos.get(i).getMes()+"/"+datos.get(i).anio);
         hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());
