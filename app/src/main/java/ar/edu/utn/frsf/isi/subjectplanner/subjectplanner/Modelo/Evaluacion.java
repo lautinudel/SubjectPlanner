@@ -1,7 +1,12 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo;
 
+import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+@Entity
 public class Evaluacion {
     @PrimaryKey (autoGenerate = true)
     public int id;
@@ -10,12 +15,16 @@ public class Evaluacion {
     public int mes;
     public int anio;
     public int hora;
+    public int minutos;
+    @Ignore
     public Asignatura asignatura;
     public int notaRegularidad;
     public int notaPromocion;
 
-    public Evaluacion(int id, String nombre, int dia, int mes, int anio, int hora, Asignatura asignatura, int notaRegularidad, int notaPromocion) {
-        this.id = id;
+    public int avisar;
+    public int idAlarma;
+
+    public Evaluacion( String nombre, int dia, int mes, int anio, int hora, int minutos, Asignatura asignatura, int notaRegularidad, int notaPromocion, int avisar, int idAlarma) {
         this.nombre = nombre;
         this.dia = dia;
         this.mes = mes;
@@ -25,6 +34,25 @@ public class Evaluacion {
         this.notaRegularidad = notaRegularidad;
         this.notaPromocion = notaPromocion;
     }
+
+    public int getAvisar() {
+        return avisar;
+    }
+
+    public void setAvisar(int avisar) {
+        this.avisar = avisar;
+    }
+
+    public int getIdAlarma() {
+        return idAlarma;
+    }
+
+    public void setIdAlarma(int idAlarma) {
+        this.idAlarma = idAlarma;
+    }
+
+
+
 
     public int getId() {
         return id;

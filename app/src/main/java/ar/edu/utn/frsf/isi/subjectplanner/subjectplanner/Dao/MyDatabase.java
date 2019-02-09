@@ -20,6 +20,7 @@ public class MyDatabase {
     private TareaDao tareaDao;
     private AsignaturaDao asignaturaDao;
     private FotografiaDao fotografiaDao;
+    private EvaluacionesDao evaluacionesDao;
 
     // constructor privado para poder implementar SINGLETON
     // al ser privado solo puede ser invocado dentro de esta clase
@@ -35,6 +36,7 @@ public class MyDatabase {
         tareaDao = db.tareaDao();
         asignaturaDao = db.asignaturaDao();
         fotografiaDao = db.fotografiaDao();
+        evaluacionesDao = db.evaluacionesDao();
 
     }
     public void borrarTodo(){
@@ -51,6 +53,8 @@ public class MyDatabase {
 
     public AsignaturaDao getAsignaturaDao(){return asignaturaDao;}
 
+    public EvaluacionesDao getEvaluacionesDao(){return evaluacionesDao;}
+
     public void setTareaDaoDao(TareaDao tareaDao) {
         this.tareaDao = tareaDao;
     }
@@ -61,5 +65,8 @@ public class MyDatabase {
 
     public void setAsignaturaDaoDao(AsignaturaDao asignaturaDao) {
         this.asignaturaDao= asignaturaDao;
+    }
+    public void setEvaluacionesDaoDao(EvaluacionesDao evaluacionesDao) {
+        this.evaluacionesDao= evaluacionesDao;
     }
 }

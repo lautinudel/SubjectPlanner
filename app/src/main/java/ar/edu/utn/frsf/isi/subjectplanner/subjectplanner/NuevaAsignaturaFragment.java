@@ -63,6 +63,7 @@ public class NuevaAsignaturaFragment extends Fragment {
     private Button btnEvaluaciones;
     private Button btnGuardarAsignatura;
     private Boolean editar;
+    private Comunicador comunicador;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -88,6 +89,8 @@ public class NuevaAsignaturaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        comunicador = (Comunicador) getActivity();
 
     }
 
@@ -231,8 +234,9 @@ public class NuevaAsignaturaFragment extends Fragment {
         btnEvaluaciones.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Fragment fragment = new EvaluacionFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
-
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack("agregarEvaluacion").commit();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
+                comunicador.pasarAsignaturaEvaluacion(asignatura);
             }
         });
 

@@ -158,6 +158,12 @@ public class NavigationActivity extends AppCompatActivity
         NuevaAsignaturaFragment fragment = (NuevaAsignaturaFragment) getSupportFragmentManager().findFragmentByTag("editarAsignatura");
         fragment.editarAsignatura(asignatura);
     }
+
+    @Override
+    public void pasarAsignaturaEvaluacion(Asignatura asignatura) {
+        EvaluacionFragment fragment = (EvaluacionFragment) getSupportFragmentManager().findFragmentByTag("agregarEvaluacion");
+        fragment.agregarEvaluacion(asignatura);
+    }
     /*@Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
