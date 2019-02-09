@@ -7,5 +7,5 @@ public interface Comunicador {
     public void responder(Tarea tarea);
     public void pasarAsignatura(Asignatura asignatura);
     public void pasarAsignaturaEvaluacion(Asignatura asignatura);
-
+    public void pasarAsignaturasListaEvaluacion(Asignatura asignatura);
 }

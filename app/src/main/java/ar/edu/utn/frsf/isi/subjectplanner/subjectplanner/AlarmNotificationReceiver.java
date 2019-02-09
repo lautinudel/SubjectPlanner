@@ -20,10 +20,15 @@ public class AlarmNotificationReceiver extends BroadcastReceiver {
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_error_black_24dp)
                 .setContentTitle(intent.getStringExtra("nombre"))
-                .setContentText("Tiene una tarea pendiente")
+                .setContentText("Tiene una actividad pendiente")
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND);
 
         NotificationManager notificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(1, builder.build());
+
+
+
     }
+
+
 }

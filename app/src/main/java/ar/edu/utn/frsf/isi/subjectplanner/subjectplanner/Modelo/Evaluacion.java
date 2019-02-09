@@ -16,10 +16,14 @@ public class Evaluacion {
     public int anio;
     public int hora;
     public int minutos;
-    @Ignore
+    @Embedded(prefix = "asig")
     public Asignatura asignatura;
     public int notaRegularidad;
     public int notaPromocion;
+
+    public int getMinutos() {
+        return minutos;
+    }
 
     public int avisar;
     public int idAlarma;

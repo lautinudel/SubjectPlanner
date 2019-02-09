@@ -18,22 +18,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Fecha evaluación"
-            android:id="@+id/edtFechaEvaluacion"/>
+            android:id="@+id/edtFechaEvaluacion"
+            android:focusableInTouchMode="false"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Hora evaluación"
-            android:id="@+id/edtHoraEvaluacion"/>
+            android:id="@+id/edtHoraEvaluacion"
+            android:focusableInTouchMode="false"/>
+
         <EditText
+            android:id="@+id/edtNotaPromocion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nota promoción"
-            android:id="@+id/edtNotaPromocion"/>
+            android:inputType="number" />
+
         <EditText
+            android:id="@+id/edtNotaRegularidad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nota regularidad"
-            android:id="@+id/edtNotaRegularidad"/>
+            android:inputType="number" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

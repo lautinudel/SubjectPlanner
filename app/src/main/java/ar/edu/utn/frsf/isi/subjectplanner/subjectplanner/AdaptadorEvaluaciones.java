@@ -5,27 +5,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Evaluacion;
 
-
-//Esta clase se usa para organizar los datos de cada fila de la actividad Tareas (organiza los datos de cada fila)
-
-
-
-public class AdaptadorTareas extends BaseAdapter {
+public class AdaptadorEvaluaciones extends BaseAdapter {
     private static LayoutInflater inflater = null;
     Context contexto;
-    ArrayList<Tarea> datos;
+    ArrayList<Evaluacion> datos;
 
-
-    public AdaptadorTareas(Context contexto, ArrayList<Tarea> datos){
+    public AdaptadorEvaluaciones(Context contexto, ArrayList<Evaluacion> datos){
         this.contexto=contexto;
         this.datos=datos;
         inflater = (LayoutInflater) contexto.getSystemService(contexto.LAYOUT_INFLATER_SERVICE);
@@ -34,11 +25,12 @@ public class AdaptadorTareas extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
         final int position =i;
-        final View vista = inflater.inflate(R.layout.elemento_lista_tareas, null);
-        TextView titulo = (TextView) vista.findViewById(R.id.textViewTitulo);
-        TextView dia = (TextView) vista.findViewById(R.id.textViewDia);
-        TextView hora = (TextView) vista.findViewById(R.id.textViewHora);
-        TextView avisar = (TextView) vista.findViewById(R.id.textViewAvisar);
+        final View vista = inflater.inflate(R.layout.elemento_lista_evaluaciones, null);
+        TextView titulo = (TextView) vista.findViewById(R.id.textViewTituloEv);
+        TextView dia = (TextView) vista.findViewById(R.id.textViewDiaEv);
+        TextView hora = (TextView) vista.findViewById(R.id.textViewHoraEv);
+        TextView avisar = (TextView) vista.findViewById(R.id.textViewAvisarEv);
+        System.out.println(datos.size());
         titulo.setText(datos.get(i).getNombre().toString());
         dia.setText(datos.get(i).getDia()+"/"+datos.get(i).getMes()+"/"+datos.get(i).anio);
         hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());

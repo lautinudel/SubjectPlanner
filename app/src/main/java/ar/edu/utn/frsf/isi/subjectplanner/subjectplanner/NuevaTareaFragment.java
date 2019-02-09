@@ -258,7 +258,6 @@ public class NuevaTareaFragment extends Fragment {
                                         if(avisar==1){ //Creo la alarma
                                             myIntent.putExtra("nombre", nuevaTarea.getNombre());
                                             myPendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(),nuevaTarea.getTiempoCreacion(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
                                             //Seteo la alarma el dia y hora seleccionado
                                             manager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),myPendingIntent);
                                         }

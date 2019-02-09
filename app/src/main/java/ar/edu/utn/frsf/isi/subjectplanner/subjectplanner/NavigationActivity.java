@@ -29,7 +29,7 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 public class NavigationActivity extends AppCompatActivity
         implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener,
-                    EvaluacionFragment.OnFragmentInteractionListener{
+                    EvaluacionFragment.OnFragmentInteractionListener, VerEvaluacionesFragment.OnFragmentInteractionListener{
 
 
 
@@ -164,6 +164,14 @@ public class NavigationActivity extends AppCompatActivity
         EvaluacionFragment fragment = (EvaluacionFragment) getSupportFragmentManager().findFragmentByTag("agregarEvaluacion");
         fragment.agregarEvaluacion(asignatura);
     }
+
+    @Override
+    public void pasarAsignaturasListaEvaluacion(Asignatura asignatura) {
+        VerEvaluacionesFragment fragment = (VerEvaluacionesFragment) getSupportFragmentManager().findFragmentByTag("verEvaluacion");
+        fragment.agregarAsignatura(asignatura);
+    }
+
+
     /*@Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

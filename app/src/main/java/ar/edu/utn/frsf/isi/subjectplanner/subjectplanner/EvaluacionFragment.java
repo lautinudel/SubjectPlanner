@@ -105,7 +105,7 @@ public class EvaluacionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Evaluaciones");
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Agregar Evaluacion");
         View view = inflater.inflate(R.layout.fragment_evaluacion, container, false);
 
         edtNombreEvaluacion = (EditText) view.findViewById(R.id.edtNombreEvaluacion);
@@ -114,9 +114,11 @@ public class EvaluacionFragment extends Fragment {
         edtNotaPromocion = (EditText) view.findViewById(R.id.edtNotaPromocion);
         edtNotaRegularidad = (EditText) view.findViewById(R.id.edtNotaRegularidad);
         swtAvisarEvaluacion = (Switch) view.findViewById(R.id.swtAvisarEvaluacion);
-
+        btnGuardarEvaluacion = (Button) view.findViewById(R.id.btnGuardarEvaluacion);
         manager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
         myIntent = new Intent(getActivity().getApplicationContext(), AlarmNotificationReceiver.class);
+
+
 
         edtFechaEvaluacion.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)

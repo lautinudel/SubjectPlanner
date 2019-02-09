@@ -1,7 +1,6 @@
 package ar.edu.utn.frsf.isi.subjectplanner.subjectplanner;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,43 +9,43 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.AsignaturaDao;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.EvaluacionesDao;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Asignatura;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Evaluacion;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AsignaturaFragment.OnFragmentInteractionListener} interface
+ * {@link VerEvaluacionesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link AsignaturaFragment#newInstance} factory method to
+ * Use the {@link VerEvaluacionesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AsignaturaFragment extends Fragment {
+public class VerEvaluacionesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private ListView listView;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private ListView lista;
     private OnFragmentInteractionListener mListener;
-
-    private AsignaturaDao aDao;
-    private ArrayList<Asignatura> datos;
-    private AdaptadorAsignaturas adapter;
+    private EvaluacionesDao edao;
+    private Asignatura asignatura;
     private Comunicador comunicador;
+    private ArrayList<Evaluacion> datos;
+    private AdaptadorEvaluaciones adapter;
 
-    public AsignaturaFragment() {
+    public VerEvaluacionesFragment() {
         // Required empty public constructor
     }
 
@@ -56,11 +55,11 @@ public class AsignaturaFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AsignaturaFragment.
+     * @return A new instance of fragment VerEvaluacionesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AsignaturaFragment newInstance(String param1, String param2) {
-        AsignaturaFragment fragment = new AsignaturaFragment();
+    public static VerEvaluacionesFragment newInstance(String param1, String param2) {
+        VerEvaluacionesFragment fragment = new VerEvaluacionesFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -75,67 +74,49 @@ public class AsignaturaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        comunicador= (Comunicador)getActivity();
+        comunicador = (Comunicador) getActivity();
     }
 
+
+
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_ver_evaluaciones, container, false);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Evaluaciones");
+        lista = view.findViewById(R.id.listViewEvaluaciones);
+        datos = new ArrayList<Evaluacion>();
+        adapter = new AdaptadorEvaluaciones(getActivity().getApplicationContext(), datos);
 
-        View view = inflater.inflate(R.layout.fragment_asignatura, container, false);
-        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Asignaturas");
-        listView =  view.findViewById(R.id.listViewAsignaturas);
-        listView.setEmptyView(view.findViewById(R.id.textViewVacioAsignaturas));
-        datos = new ArrayList<Asignatura>();
 
-        adapter = new AdaptadorAsignaturas(getActivity().getApplicationContext(),datos);
+        lista.setAdapter(adapter);
 
-        Thread r = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
-                    List<Asignatura> listaAsignaturas = aDao.getAll();
-                    System.out.println("Tamaño lista asignaturas: "+listaAsignaturas.size());
-                    datos.addAll(listaAsignaturas);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-
-                    }
-                });
-            }};
-        r.start();
-
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //Acciones si toco una fila de la lista (una evaluacion en particular)
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment fragment = new NuevaAsignaturaFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment, "editarAsignatura").addToBackStack(null).commit();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
-                comunicador.pasarAsignatura(datos.get(position));
+                //agregar nota de la evaluacion
+
             }
         });
 
 
-        //Botón flotante para añadir asignaturas
-        FloatingActionButton add = (FloatingActionButton) view.findViewById(R.id.addAsignatura);
-        add.setOnClickListener(new View.OnClickListener() {
+
+
+
+        //Boton flotante de nueva evaluacion
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.addEvaluacion);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(getApplicationContext(), "Inicio activityForResult de Nueva Asignatura", Toast.LENGTH_SHORT).show();
-                Fragment fragment = new NuevaAsignaturaFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack(null).commit();
-                //((NavigationActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                //((NavigationActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+                //Toast.makeText(getActivity().getApplicationContext(), "ME MUEVO A NUEVA TAREA",Toast.LENGTH_SHORT).show();
+                Fragment fragment = new EvaluacionFragment();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment,"agregarEvaluacion").addToBackStack(null).commit();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
+                comunicador.pasarAsignaturaEvaluacion(asignatura);
             }
         });
+
 
 
         return view;
@@ -178,5 +159,37 @@ public class AsignaturaFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void agregarAsignatura(Asignatura a){
+        this.asignatura = a;
+
+
+        Thread r = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    List<Evaluacion> aux;
+                    List<Evaluacion> listaEvaluaciones = new ArrayList<Evaluacion>();
+                    edao = MyDatabase.getInstance(getActivity().getApplicationContext()).getEvaluacionesDao();
+                    aux = edao.getAll();
+                    for(Evaluacion e : aux){
+                        if(e.getAsignatura().getId()==asignatura.getId()){
+                            listaEvaluaciones.add(e);
+                        }
+                    }
+                    datos.addAll(listaEvaluaciones);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+            }};
+        r.start();
     }
 }

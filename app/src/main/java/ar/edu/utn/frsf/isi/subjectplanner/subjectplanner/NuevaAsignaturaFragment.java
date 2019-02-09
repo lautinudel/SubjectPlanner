@@ -101,7 +101,7 @@ public class NuevaAsignaturaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_nueva_asignatura, container, false);
         cargarSpinnerNivel(view);
         cargarSpinnerPeriodo(view);
-
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Nueva Asignatura");
         editar=false;
         edtNombreAsignatura = (EditText) view.findViewById(R.id.edtNombre);
         edtAnioAsignatura = (EditText) view.findViewById(R.id.edtAnio);
@@ -233,10 +233,10 @@ public class NuevaAsignaturaFragment extends Fragment {
 
         btnEvaluaciones.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Fragment fragment = new EvaluacionFragment();
-                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment).addToBackStack("agregarEvaluacion").commit();
+                Fragment fragment = new VerEvaluacionesFragment();
+                ((NavigationActivity)getActivity()).getSupportFragmentManager().beginTransaction().replace(R.id.Contenedor, fragment,"verEvaluacion").addToBackStack(null).commit();
                 ((NavigationActivity)getActivity()).getSupportFragmentManager().executePendingTransactions();
-                comunicador.pasarAsignaturaEvaluacion(asignatura);
+                comunicador.pasarAsignaturasListaEvaluacion(asignatura);
             }
         });
 
@@ -372,9 +372,9 @@ public class NuevaAsignaturaFragment extends Fragment {
                 // First item is disable and it is used for hint
                 if(position > 0){
                     // Notify the selected item text
-                    Toast.makeText
+                    /*Toast.makeText
                             (getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
+                            .show();*/
                 }
             }
 
@@ -432,9 +432,9 @@ public class NuevaAsignaturaFragment extends Fragment {
                 // First item is disable and it is used for hint
                 if(position > 0){
                     // Notify the selected item text
-                    Toast.makeText
+                   /* Toast.makeText
                             (getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
+                            .show();*/
                 }
             }
 
