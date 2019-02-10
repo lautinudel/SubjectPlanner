@@ -169,7 +169,7 @@ public class NuevaTareaFragment extends Fragment {
         buttonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
-                    Toast.makeText(getActivity().getApplicationContext(),"Asegúrese completar todos los campos",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(),"Asegúrese de completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
 
                     //Obtengo el valor del switch

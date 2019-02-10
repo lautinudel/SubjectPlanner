@@ -105,7 +105,7 @@ public class EvaluacionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Agregar Evaluacion");
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Agregar Evaluación");
         View view = inflater.inflate(R.layout.fragment_evaluacion, container, false);
 
         edtNombreEvaluacion = (EditText) view.findViewById(R.id.edtNombreEvaluacion);
