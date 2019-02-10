@@ -99,6 +99,13 @@
             tools:text="VER EVALUACIONES" />
 
         <Button
+            android:id="@+id/btnEstado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="VER ESTADO DE ASIGNATURA"
+            tools:text="VER ESTADO DE ASIGNATURA" />
+
+        <Button
             android:id="@+id/btnEliminar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

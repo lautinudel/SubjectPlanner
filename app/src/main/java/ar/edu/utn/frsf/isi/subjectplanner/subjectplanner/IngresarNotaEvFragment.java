@@ -78,8 +78,8 @@ public class IngresarNotaEvFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view =inflater.inflate(R.layout.fragment_ingresar_nota_ev, container, false);
-        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Nota obtenida");
-        btnGuardar= view.findViewById(R.id.buttonGuardar);
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Calificación obtenida");
+        btnGuardar = view.findViewById(R.id.buttonGuardar);
         edtNotaObtenida = view.findViewById(R.id.editTextNotaObtenida);
 
 
@@ -99,7 +99,7 @@ public class IngresarNotaEvFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "La nota se agrego correctamente", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity().getApplicationContext(), "La calificación se agregó exitosamente", Toast.LENGTH_LONG).show();
                                     edtNotaObtenida.setText("");
                                 }
                             });
@@ -110,8 +110,6 @@ public class IngresarNotaEvFragment extends Fragment {
 
             }
         });
-
-
 
         return view;
     }

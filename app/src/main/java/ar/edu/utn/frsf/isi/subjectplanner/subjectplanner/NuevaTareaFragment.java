@@ -169,7 +169,7 @@ public class NuevaTareaFragment extends Fragment {
         buttonGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(edtnombre.getText().toString().isEmpty() || edtDia.getText().toString().isEmpty() || edtHora.getText().toString().isEmpty()){
-                    Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(),"Asegúrese completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
 
                     //Obtengo el valor del switch
@@ -194,7 +194,7 @@ public class NuevaTareaFragment extends Fragment {
                         cal.set(anio,mes-1,dia,hora,minutos);
                         //Veo si la fecha/hora seleccionada es anterior a la actual
                         if(cal.before(Calendar.getInstance())){
-                            Toast.makeText(getActivity().getApplicationContext(),"El horario es incorrecto",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(),"El horario ingresado es incorrecto",Toast.LENGTH_SHORT).show();
                         }else{
                             buttonGuardar.setEnabled(false);
                             buttonEliminar.setEnabled(false);
@@ -225,7 +225,7 @@ public class NuevaTareaFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(getActivity().getApplicationContext(), "La tarea se edito correctamente", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity().getApplicationContext(), "La tarea se modificó exitosamente", Toast.LENGTH_LONG).show();
                                             edtnombre.setText("");
                                             edtDia.setText("");
                                             edtHora.setText("");
@@ -243,7 +243,7 @@ public class NuevaTareaFragment extends Fragment {
                         cal.set(anio,mes-1,dia,hora,minutos);
                         //Veo si la fecha/hora seleccionada es anterior a la actual
                         if(cal.before(Calendar.getInstance())){
-                            Toast.makeText(getActivity().getApplicationContext(),"El horario es incorrecto",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(),"El horario ingresado es incorrecto",Toast.LENGTH_SHORT).show();
                         }else{
                             buttonGuardar.setEnabled(false);
                             buttonEliminar.setEnabled(false);
@@ -268,7 +268,7 @@ public class NuevaTareaFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Toast.makeText(getActivity().getApplicationContext(), "La tarea se agrego correctamente", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(getActivity().getApplicationContext(), "La tarea se agregó exitosamente", Toast.LENGTH_LONG).show();
                                             edtnombre.setText("");
                                             edtDia.setText("");
                                             edtHora.setText("");
@@ -305,7 +305,7 @@ public class NuevaTareaFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "La tarea se elimino correctamente", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity().getApplicationContext(), "La tarea se eliminó exitosamente", Toast.LENGTH_LONG).show();
                                     edtnombre.setText("");
                                     edtDia.setText("");
                                     edtHora.setText("");
@@ -315,7 +315,7 @@ public class NuevaTareaFragment extends Fragment {
                         }
                     };
                     r.start();
-                }else  Toast.makeText(getActivity().getApplicationContext(), "Error, la tarea no existe", Toast.LENGTH_LONG).show();
+                }else  Toast.makeText(getActivity().getApplicationContext(), "ERROR: la tarea no existe", Toast.LENGTH_LONG).show();
 
 
 

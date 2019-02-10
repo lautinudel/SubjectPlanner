@@ -175,7 +175,7 @@ public class EvaluacionFragment extends Fragment {
             public void onClick(View v) {
                 if(edtNombreEvaluacion.getText().toString().isEmpty() || edtFechaEvaluacion.getText().toString().isEmpty() || edtHoraEvaluacion.getText().toString().isEmpty()
                         || edtNotaPromocion.getText().toString().isEmpty() || edtNotaRegularidad.getText().toString().isEmpty()){
-                    Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(),"Asegúrese de completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
                     //Obtengo el valor del switch
                     if(swtAvisarEvaluacion.isChecked()) avisar=1;
@@ -220,7 +220,7 @@ public class EvaluacionFragment extends Fragment {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                Toast.makeText(getActivity().getApplicationContext(), "La evaluación se agrego correctamente", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getActivity().getApplicationContext(), "La evaluación se agregó exitosamente", Toast.LENGTH_LONG).show();
                                                 edtNombreEvaluacion.setText("");
                                                 edtFechaEvaluacion.setText("");
                                                 edtHoraEvaluacion.setText("");

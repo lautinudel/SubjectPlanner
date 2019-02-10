@@ -17,10 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.AsignaturaDao;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.EvaluacionesDao;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Dao.MyDatabase;
 import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Asignatura;
+import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Evaluacion;
 
 
 /**
@@ -49,21 +54,26 @@ public class NuevaAsignaturaFragment extends Fragment {
 
     private Spinner nivelSpinner;
     private Spinner periodoSpinner;
-
     private Asignatura asignatura;
-
     private EditText edtNombreAsignatura;
     private EditText edtAnioAsignatura;
     private EditText edtProfesorAsignatura;
     private EditText edtEmailAsignatura;
     private EditText edtObservacionesAsignatura;
     private AsignaturaDao aDao;
+    private EvaluacionesDao edao;
+    private ArrayList<Evaluacion> evaluaciones =  new ArrayList<Evaluacion>();
     private Button btnModificar;
     private Button btnEliminar;
     private Button btnEvaluaciones;
+    private Button btnEstado;
     private Button btnGuardarAsignatura;
     private Boolean editar;
     private Comunicador comunicador;
+    private String estadoAsignatura;
+    private int flag;
+
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -110,9 +120,11 @@ public class NuevaAsignaturaFragment extends Fragment {
         edtObservacionesAsignatura = (EditText) view.findViewById(R.id.edtObservaciones);
         btnEliminar = (Button) view.findViewById(R.id.btnEliminar);
         btnEvaluaciones = (Button) view.findViewById(R.id.btnEvaluacion);
+        btnEstado = (Button) view.findViewById(R.id.btnEstado);
         btnModificar = (Button) view.findViewById(R.id.btnModificar);
         btnEliminar.setVisibility(View.INVISIBLE);
         btnEvaluaciones.setVisibility(View.INVISIBLE);
+        btnEstado.setVisibility(View.INVISIBLE);
         btnModificar.setVisibility(View.INVISIBLE);
 
 
@@ -120,7 +132,7 @@ public class NuevaAsignaturaFragment extends Fragment {
         btnGuardarAsignatura.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(edtNombreAsignatura.getText().toString().isEmpty() || edtAnioAsignatura.getText().toString().isEmpty() || edtEmailAsignatura.getText().toString().isEmpty() || edtProfesorAsignatura.getText().toString().isEmpty()){
-                    Toast.makeText(getActivity().getApplicationContext(),"Debe completar todos los campos",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(),"Asegúrese de completar todos los campos",Toast.LENGTH_SHORT).show();
                 }else {
                     if(editar==false) {
                         //Se guarda la asignatura en la base de datos
@@ -149,7 +161,7 @@ public class NuevaAsignaturaFragment extends Fragment {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(), "La asignatura se agregó correctamente", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity().getApplicationContext(), "La asignatura se agregó exitosamente", Toast.LENGTH_LONG).show();
                                         edtNombreAsignatura.setText("");
                                         edtAnioAsignatura.setText("");
                                         edtEmailAsignatura.setText("");
@@ -187,7 +199,7 @@ public class NuevaAsignaturaFragment extends Fragment {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(), "La asignatura se modificó correctamente", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity().getApplicationContext(), "La asignatura se modificó exitosamente", Toast.LENGTH_LONG).show();
                                         edtNombreAsignatura.setEnabled(false);
                                         edtAnioAsignatura.setEnabled(false);
                                         edtProfesorAsignatura.setEnabled(false);
@@ -197,9 +209,11 @@ public class NuevaAsignaturaFragment extends Fragment {
                                         edtObservacionesAsignatura.setEnabled(false);
                                         btnModificar.setEnabled(true);
                                         btnEvaluaciones.setEnabled(true);
+                                        btnEstado.setEnabled(true);
                                         btnEliminar.setEnabled(true);
                                         btnModificar.setVisibility(View.VISIBLE);
                                         btnEvaluaciones.setVisibility(View.VISIBLE);
+                                        btnEstado.setVisibility(View.VISIBLE);
                                         btnEliminar.setVisibility(View.VISIBLE);
                                         btnGuardarAsignatura.setEnabled(false);
                                     }
@@ -225,6 +239,7 @@ public class NuevaAsignaturaFragment extends Fragment {
                 btnGuardarAsignatura.setEnabled(true);
                 btnModificar.setEnabled(false);
                 btnEvaluaciones.setEnabled(false);
+                btnEstado.setEnabled(false);
                 btnEliminar.setEnabled(false);
                 editar=true;
             }
@@ -239,6 +254,102 @@ public class NuevaAsignaturaFragment extends Fragment {
                 comunicador.pasarAsignaturasListaEvaluacion(asignatura);
             }
         });
+
+        btnEstado.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Date dateActual = Calendar.getInstance().getTime();
+                ArrayList<Date> rangosInfYSup = obtenerRangos(asignatura.getAnio(), asignatura.getPeriodo());
+
+                //Si la fecha actual esta entre los rangos inferiores y superiores del período -> ASIGNATURA EN CURSO.
+                if (dateActual.after(rangosInfYSup.get(0)) && dateActual.before(rangosInfYSup.get(1))) {
+                    estadoAsignatura = "En curso";
+                    Toast.makeText(getActivity().getApplicationContext(),"Estado de la asignatura " + asignatura.getNombre() + ": " + estadoAsignatura, Toast.LENGTH_LONG).show();
+                }
+
+                //Si la asignatura no está en curso, necesitamos obtener la lista de sus evaluaciones para determinar el estado de dicha aaignatura.
+                else {
+
+                    Thread r = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                //Conseguimos la lista de evaluaciones asociadas a la asignatura actual.
+                                List<Evaluacion> aux;
+                                edao = MyDatabase.getInstance(getActivity().getApplicationContext()).getEvaluacionesDao();
+                                aux = edao.getAll();
+
+                                for(Evaluacion e : aux){
+                                    if(e.getAsignatura().getId() == asignatura.getId()){
+                                        evaluaciones.add(e);
+                                    }
+                                }
+
+                                //flag vale 1 si se han ingresado todos los resultados de las evaluaciones, 2 si falta ingresar el resultado de una
+                                //o mas evaluaciones, y vale 3 si aun no hay evaluaciones asociadas a la asignatura.
+                                flag = 1;
+                                int k = 0;
+                                while (k<evaluaciones.size() && flag==1) {
+                                    if (evaluaciones.get(k).getNotaObtenida() == -1)
+                                        flag = 2;
+                                    k++;
+                                }
+                                if (evaluaciones.size()==0)
+                                    flag = 3;
+
+                                //Si no esta en curso y todas las evaluaciones estan promocionadas -> ASIGNATURA PROMOCIONADA.
+                                int i = 0;
+                                int contEvalPromocionadas = 0;
+                                while (i<evaluaciones.size() && evaluaciones.get(i).getNotaObtenida() >= evaluaciones.get(i).getNotaPromocion()) {
+                                    contEvalPromocionadas++;
+                                    i++;
+                                }
+                                if (contEvalPromocionadas == evaluaciones.size())
+                                    estadoAsignatura = "Promocionada";
+
+
+                                //Si no esta en curso y todas las evaluaciones estan regularizadas -> ASIGNATURA REGULARIZADA.
+                                if (!compararPorVerdadero(estadoAsignatura,"Promocionada")) {
+                                    int j = 0;
+                                    int contEvalRegularizadas = 0;
+                                    System.out.println("EVAL SIZE: "+evaluaciones.size());
+                                    while (j<evaluaciones.size() && evaluaciones.get(j).getNotaObtenida() >= evaluaciones.get(j).getNotaRegularidad()) {
+                                        contEvalRegularizadas++;
+                                        j++;
+                                    }
+                                    if (contEvalRegularizadas == evaluaciones.size())
+                                        estadoAsignatura = "Regularizada";
+                                }
+
+                                //Si no esta en curso y no se promocionó ni regularizó -> ASIGNATURA LIBRE.
+                                if (!compararPorVerdadero(estadoAsignatura,"Promocionada") && !compararPorVerdadero(estadoAsignatura,"Regularizada")) {
+                                    estadoAsignatura="Libre";
+                                }
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (flag == 1)
+                                        Toast.makeText(getActivity().getApplicationContext(),"Estado de la asignatura " + asignatura.getNombre() + ": " + estadoAsignatura, Toast.LENGTH_LONG).show();
+                                    else if (flag == 2)
+                                        Toast.makeText(getActivity().getApplicationContext(),"No se han ingresado los resultados de todas las evaluaciones", Toast.LENGTH_LONG).show();
+                                    else
+                                        Toast.makeText(getActivity().getApplicationContext(),"No se han ingresado evaluaciones aún.", Toast.LENGTH_LONG).show();
+
+                                }
+                            });
+                        }};
+                    r.start();
+
+                }
+
+            }
+        });
+
+
 
         btnEliminar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -267,7 +378,7 @@ public class NuevaAsignaturaFragment extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(getActivity().getApplicationContext(), "La asignatura se eliminó correctamente", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity().getApplicationContext(), "La asignatura se eliminó exitosamente", Toast.LENGTH_LONG).show();
                                 edtNombreAsignatura.setText("");
                                 edtAnioAsignatura.setText("");
                                 edtEmailAsignatura.setText("");
@@ -282,6 +393,62 @@ public class NuevaAsignaturaFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private ArrayList<Date> obtenerRangos (int anio, int periodo) {
+
+        ArrayList<Date> ret = new ArrayList<Date>();
+        Calendar calActual = Calendar.getInstance();
+        Date dateActual = calActual.getTime();
+        Calendar calInfPeriodo = Calendar.getInstance();
+        Calendar calSupPeriodo = Calendar.getInstance();
+        Date rangoInfPeriodo, rangoSupPeriodo;
+
+        //Asumimos que las materias del 1° cuatrimestre inician sus actividades el 01/03, y finalizan el 30/06.
+        if (periodo == 1) {
+            calInfPeriodo.set(Calendar.YEAR, anio);
+            calInfPeriodo.set(Calendar.MONTH, 2);
+            calInfPeriodo.set(Calendar.DAY_OF_MONTH, 1);
+            rangoInfPeriodo = calInfPeriodo.getTime();
+            calSupPeriodo.set(Calendar.YEAR, anio);
+            calSupPeriodo.set(Calendar.MONTH, 5);
+            calSupPeriodo.set(Calendar.DAY_OF_MONTH, 30);
+            rangoSupPeriodo = calSupPeriodo.getTime();
+
+         //Asumimos que las materias del 2° cuatrimestre inician sus actividades el 01/08, y finalizan el 30/11.
+        } else if (periodo == 2) {
+            calInfPeriodo.set(Calendar.YEAR, anio);
+            calInfPeriodo.set(Calendar.MONTH, 7);
+            calInfPeriodo.set(Calendar.DAY_OF_MONTH, 1);
+            rangoInfPeriodo = calInfPeriodo.getTime();
+            calSupPeriodo.set(Calendar.YEAR, anio);
+            calSupPeriodo.set(Calendar.MONTH, 10);
+            calSupPeriodo.set(Calendar.DAY_OF_MONTH, 30);
+            rangoSupPeriodo = calSupPeriodo.getTime();
+
+         //Asumimos que las materias anuales inician sus actividades el 01/02 (con fines de poder agregar materias en curso en el momento en el
+         // que de desarrolla la app, sin embargo esto podría implementarse como parte de la Configuración de la app), y finalizan el 30/11.
+        } else {
+            calInfPeriodo.set(Calendar.YEAR, anio);
+            calInfPeriodo.set(Calendar.MONTH, 1);
+            calInfPeriodo.set(Calendar.DAY_OF_MONTH, 1);
+            rangoInfPeriodo = calInfPeriodo.getTime();
+            calSupPeriodo.set(Calendar.YEAR, anio);
+            calSupPeriodo.set(Calendar.MONTH, 10);
+            calSupPeriodo.set(Calendar.DAY_OF_MONTH, 30);
+            rangoSupPeriodo = calSupPeriodo.getTime();
+        }
+
+        ret.add(rangoInfPeriodo);
+        ret.add(rangoSupPeriodo);
+        return ret;
+    }
+
+    private boolean compararPorVerdadero(String str1, String str2) {
+        if (str1 == null)
+            return false;
+
+        return str1.equals(str2);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -447,7 +614,7 @@ public class NuevaAsignaturaFragment extends Fragment {
 
     public void editarAsignatura(Asignatura asignatura){
         this.asignatura=asignatura;
-        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Editar asignatura");
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle(asignatura.getNombre());
         edtNombreAsignatura.setText(asignatura.getNombre());
         edtAnioAsignatura.setText(String.valueOf(asignatura.getAnio()));
         edtProfesorAsignatura.setText(asignatura.getProfesor());
@@ -479,6 +646,7 @@ public class NuevaAsignaturaFragment extends Fragment {
         btnEliminar.setEnabled(true);
         btnModificar.setVisibility(View.VISIBLE);
         btnEvaluaciones.setVisibility(View.VISIBLE);
+        btnEstado.setVisibility(View.VISIBLE);
         btnEliminar.setVisibility(View.VISIBLE);
         btnGuardarAsignatura.setEnabled(false);
 

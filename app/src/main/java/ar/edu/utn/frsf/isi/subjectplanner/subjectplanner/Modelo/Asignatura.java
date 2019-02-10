@@ -16,7 +16,7 @@ public class Asignatura {
     public String profesor;
     public String email;
     public String observaciones;
-
+    //public Enum estadoAsignatura;
 
     public Asignatura(String nombre, int anio, int nivel, int periodo, String profesor, String email, String observaciones) {
         this.nombre = nombre;

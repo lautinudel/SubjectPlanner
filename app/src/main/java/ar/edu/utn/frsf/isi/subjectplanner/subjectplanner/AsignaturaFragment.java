@@ -96,7 +96,6 @@ public class AsignaturaFragment extends Fragment {
                 try {
                     aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
                     List<Asignatura> listaAsignaturas = aDao.getAll();
-                    System.out.println("Tamaño lista asignaturas: "+listaAsignaturas.size());
                     datos.addAll(listaAsignaturas);
                 } catch (Exception e) {
                     e.printStackTrace();

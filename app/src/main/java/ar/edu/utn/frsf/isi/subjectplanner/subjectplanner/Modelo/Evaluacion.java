@@ -50,7 +50,7 @@ public class Evaluacion {
         this.asignatura = asignatura;
         this.notaRegularidad = notaRegularidad;
         this.notaPromocion = notaPromocion;
-        this.notaObtenida=0;
+        this.notaObtenida=-1;
     }
 
     public int getAvisar() {
