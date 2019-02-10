@@ -102,8 +102,5 @@
             android:layout_height="wrap_content"
             android:text="GUARDAR" />
 
-
     </LinearLayout>
-
-
 </FrameLayout>
