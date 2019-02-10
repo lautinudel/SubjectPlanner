@@ -30,7 +30,7 @@ import ar.edu.utn.frsf.isi.subjectplanner.subjectplanner.Modelo.Tarea;
 public class NavigationActivity extends AppCompatActivity
         implements Comunicador, NavigationView.OnNavigationItemSelectedListener, TareasFragment.OnFragmentInteractionListener, NuevaTareaFragment.OnFragmentInteractionListener
                     , AsignaturaFragment.OnFragmentInteractionListener, NuevaAsignaturaFragment.OnFragmentInteractionListener, AboutFragment.OnFragmentInteractionListener, FotografiasFragment.OnFragmentInteractionListener,
-                    EvaluacionFragment.OnFragmentInteractionListener, VerEvaluacionesFragment.OnFragmentInteractionListener, IngresarNotaEvFragment.OnFragmentInteractionListener{
+                    EvaluacionFragment.OnFragmentInteractionListener, VerEvaluacionesFragment.OnFragmentInteractionListener, IngresarNotaEvFragment.OnFragmentInteractionListener, PromediosFragment.OnFragmentInteractionListener{
 
 
 
@@ -118,7 +118,9 @@ public class NavigationActivity extends AppCompatActivity
             fragment = new TareasFragment();
 
         } else if (id == R.id.navPromedios) { //Boton Promedios
-            Toast.makeText(this,"Funcionalidad en desarollo", Toast.LENGTH_LONG).show();
+            fragmentoSeleccionado=true;
+            getSupportActionBar().setTitle("Promedios");
+            fragment = new PromediosFragment();
 
         } else if (id == R.id.navFotografias) { //Boton Fotografías
             fragmentoSeleccionado=true;

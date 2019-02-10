@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 public class AboutFragment extends Fragment {
 
 
+    //private OnFragmentInteractionListener mListener;
     private OnFragmentInteractionListener mListener;
 
     public AboutFragment() {
