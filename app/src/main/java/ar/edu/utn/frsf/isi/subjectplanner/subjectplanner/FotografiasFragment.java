@@ -54,6 +54,7 @@ public class FotografiasFragment extends Fragment {
     private List<Fotografia> listaFotografias = new ArrayList<Fotografia>();
     private List<Drawable> listaDrawables = new ArrayList<Drawable>();
     private ArrayList<File> imageFiles = new ArrayList<>();
+    private ArrayList<String> filesPaths;
     private Fotografia foto = new Fotografia();
     private FotografiaDao fdao;
 
@@ -68,7 +69,8 @@ public class FotografiasFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_fotografias, container, false);
         final GridView gv = (GridView) v.findViewById(R.id.gvFotos);
 
-        final AdaptadorImagenes adapter = new AdaptadorImagenes(getActivity().getApplicationContext(), imageFiles);
+        filesPaths = new ArrayList<String>();
+        final AdaptadorImagenes adapter = new AdaptadorImagenes(getActivity().getApplicationContext(), filesPaths);
         Thread r = new Thread() {
             @Override
             public void run() {
@@ -77,9 +79,16 @@ public class FotografiasFragment extends Fragment {
                     //Obtenemos la lista de fotografías de la BDD.
                     FotografiasFragment.this.listaFotografias = MyDatabase.getInstance(getActivity()).getFotografiaDao().getAll();
 
+ /*
                     for (Fotografia elem : listaFotografias) {
                         File f = new File(elem.pathFoto);
-                        FotografiasFragment.this.imageFiles.add(f);
+                        imageFiles.add(f);
+                    }
+ */
+
+                    //filesPaths = new String[listaFotografias.size()];
+                    for (int i=0; i<listaFotografias.size();i++) {
+                        filesPaths.add(listaFotografias.get(i).getPathFoto());
                     }
 
                 } catch (Exception e) {
@@ -91,9 +100,7 @@ public class FotografiasFragment extends Fragment {
                         adapter.notifyDataSetChanged();
 
                     }
-
                 });
-
             }
         };
         r.start();
@@ -120,7 +127,7 @@ public class FotografiasFragment extends Fragment {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getContext(), ViewImage.class).putExtra("img",imageFiles.get(position).toString()));
+                startActivity(new Intent(getContext(), ViewImage.class).putExtra("img",filesPaths.get(position).toString()));
             }
         });
 
@@ -192,7 +199,6 @@ public class FotografiasFragment extends Fragment {
             r.start();
             Toast.makeText(getActivity().getApplicationContext(),"La fotografía se agregó exitosamente",Toast.LENGTH_SHORT).show();
         }
-
     }
 
 

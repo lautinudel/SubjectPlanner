@@ -10,7 +10,7 @@ import java.io.File;
 
 public class ViewImage extends AppCompatActivity {
 
-    ImageView iv2;
+    ImageView iv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +20,8 @@ public class ViewImage extends AppCompatActivity {
         //Intent i = getIntent();
         //File f = i.getExtras().getParcelable("img");
         String f = getIntent().getStringExtra("img");
-        iv2 = (ImageView) findViewById(R.id.imageView2);
-        iv2.setImageURI(Uri.parse(f));
+        iv = (ImageView) findViewById(R.id.ivFotoCompleta);
+        iv.setImageURI(Uri.parse(f));
 
 
     }
