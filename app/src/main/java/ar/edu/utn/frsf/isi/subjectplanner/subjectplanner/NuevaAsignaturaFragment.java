@@ -364,19 +364,19 @@ public class NuevaAsignaturaFragment extends Fragment {
                     @Override
                     public void run() {
                         try {
-                            /*int auxPeriodo;
-                            if (periodoSpinner.getSelectedItem().toString() == "1° Cuatrimestre") {
-                                auxPeriodo = 1;
-                            } else if (periodoSpinner.getSelectedItem().toString() == "2° Cuatrimestre") {
-                                auxPeriodo = 2;
-                            } else {
-                                auxPeriodo = 3;
+
+                            List<Evaluacion> aux;
+                            List<Evaluacion> listaEvaluaciones = new ArrayList<Evaluacion>();
+                            edao = MyDatabase.getInstance(getActivity().getApplicationContext()).getEvaluacionesDao();
+                            aux = edao.getAll();
+                            for(Evaluacion e : aux){
+                                if(e.getAsignatura().getId()==asignatura.getId()){
+                                    listaEvaluaciones.add(e);
+                                }
                             }
-                            Asignatura nueva = new Asignatura(
-                                    edtNombreAsignatura.getText().toString(), Integer.parseInt(edtAnioAsignatura.getText().toString()),
-                                    Integer.parseInt(nivelSpinner.getSelectedItem().toString()), auxPeriodo,
-                                    edtProfesorAsignatura.getText().toString(), edtEmailAsignatura.getText().toString(), edtObservacionesAsignatura.getText().toString()
-                            );*/
+                            for(Evaluacion e : listaEvaluaciones){//Borro todas las evaluaciones de la asignatura
+                                edao.delete(e);
+                            }
                             aDao = MyDatabase.getInstance(getActivity().getApplicationContext()).getAsignaturaDao();
                             aDao.delete(asignatura);
                         } catch (Exception e) {
