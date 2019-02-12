@@ -47,6 +47,7 @@ public class Evaluacion {
         this.mes = mes;
         this.anio = anio;
         this.hora = hora;
+        this.minutos=minutos;
         this.asignatura = asignatura;
         this.notaRegularidad = notaRegularidad;
         this.notaPromocion = notaPromocion;

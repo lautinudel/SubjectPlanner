@@ -189,14 +189,6 @@ public class EvaluacionFragment extends Fragment {
                         if(cal.before(Calendar.getInstance())){
                             Toast.makeText(getActivity().getApplicationContext(),"El horario es incorrecto",Toast.LENGTH_SHORT).show();
                         }else{
-                        cal = Calendar.getInstance();
-                        cal.setTimeInMillis(System.currentTimeMillis());
-                        cal.clear();
-                        cal.set(anio,mes-1,dia,hora,minutos);
-                        //Veo si la fecha/hora seleccionada es anterior a la actual
-                        if(cal.before(Calendar.getInstance())){
-                            Toast.makeText(getActivity().getApplicationContext(),"El horario es incorrecto",Toast.LENGTH_SHORT).show();
-                        }else{
                             if(asignatura!=null){
                                 Thread r = new Thread() {
                                     @Override
@@ -234,7 +226,6 @@ public class EvaluacionFragment extends Fragment {
                                 r.start();
                             }
 
-                        }
 
                     }
 
