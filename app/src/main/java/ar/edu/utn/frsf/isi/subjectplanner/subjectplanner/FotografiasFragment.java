@@ -68,7 +68,7 @@ public class FotografiasFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_fotografias, container, false);
         final GridView gv = (GridView) v.findViewById(R.id.gvFotos);
-
+        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Fotografías");
         filesPaths = new ArrayList<String>();
         final AdaptadorImagenes adapter = new AdaptadorImagenes(getActivity().getApplicationContext(), filesPaths);
         Thread r = new Thread() {

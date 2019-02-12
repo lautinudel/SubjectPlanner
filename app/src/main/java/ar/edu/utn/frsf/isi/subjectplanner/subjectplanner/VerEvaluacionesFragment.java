@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,11 +86,16 @@ public class VerEvaluacionesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ver_evaluaciones, container, false);
         ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Evaluaciones");
         lista = view.findViewById(R.id.listViewEvaluaciones);
+        TextView vacio = (TextView) view.findViewById(R.id.textViewVacio);
         datos = new ArrayList<Evaluacion>();
         adapter = new AdaptadorEvaluaciones(getActivity().getApplicationContext(), datos);
-
+        lista.setEmptyView(vacio);
 
         lista.setAdapter(adapter);
+
+        if(asignatura!=null){
+            this.agregarAsignatura(asignatura);
+        }
 
         //Acciones si toco una fila de la lista (una evaluacion en particular)
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -121,17 +121,14 @@ public class NavigationActivity extends AppCompatActivity
 
         } else if (id == R.id.navPromedios) { //Boton Promedios
             fragmentoSeleccionado=true;
-            getSupportActionBar().setTitle("Promedios");
             fragment = new PromediosFragment();
 
         } else if (id == R.id.navFotografias) { //Boton Fotografías
             fragmentoSeleccionado=true;
-            getSupportActionBar().setTitle("Fotografías");
             fragment = new FotografiasFragment();
 
         } else if (id == R.id.navAbout) { //Boton Acerca de
             fragmentoSeleccionado=true;
-            getSupportActionBar().setTitle("Acerca de");
             fragment = new AboutFragment();
         }
 

@@ -124,7 +124,7 @@ public class PromediosFragment extends Fragment {
         niveles.add("5");
         niveles.add("Todos (promedio general)");
         nivelSpinner = (Spinner) view.findViewById(R.id.spnNivelProm);
-        ArrayAdapter<String> nivelAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.support_simple_spinner_dropdown_item, niveles){
+        ArrayAdapter<String> nivelAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.spinner_style, niveles){
             @Override
             public boolean isEnabled(int position){
                 if(position == 0)

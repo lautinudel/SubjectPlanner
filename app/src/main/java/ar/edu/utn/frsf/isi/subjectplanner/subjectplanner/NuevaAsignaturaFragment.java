@@ -111,8 +111,6 @@ public class NuevaAsignaturaFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_nueva_asignatura, container, false);
         cargarSpinnerNivel(view);
         cargarSpinnerPeriodo(view);
-        ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Nueva Asignatura");
-        editar=false;
         edtNombreAsignatura = (EditText) view.findViewById(R.id.edtNombre);
         edtAnioAsignatura = (EditText) view.findViewById(R.id.edtAnio);
         edtEmailAsignatura = (EditText) view.findViewById(R.id.edtEmail);
@@ -122,13 +120,22 @@ public class NuevaAsignaturaFragment extends Fragment {
         btnEvaluaciones = (Button) view.findViewById(R.id.btnEvaluacion);
         btnEstado = (Button) view.findViewById(R.id.btnEstado);
         btnModificar = (Button) view.findViewById(R.id.btnModificar);
-        btnEliminar.setVisibility(View.INVISIBLE);
-        btnEvaluaciones.setVisibility(View.INVISIBLE);
-        btnEstado.setVisibility(View.INVISIBLE);
-        btnModificar.setVisibility(View.INVISIBLE);
-
-
         btnGuardarAsignatura = (Button) view.findViewById(R.id.btnGuardarAsignatura);
+        if(asignatura==null){
+            ((NavigationActivity)getActivity()).getSupportActionBar().setTitle("Nueva Asignatura");
+            editar=false;
+            btnEliminar.setVisibility(View.INVISIBLE);
+            btnEvaluaciones.setVisibility(View.INVISIBLE);
+            btnEstado.setVisibility(View.INVISIBLE);
+            btnModificar.setVisibility(View.INVISIBLE);
+        }else{
+            this.editarAsignatura(asignatura);
+            btnGuardarAsignatura.setEnabled(false);
+        }
+
+
+
+
         btnGuardarAsignatura.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(edtNombreAsignatura.getText().toString().isEmpty() || edtAnioAsignatura.getText().toString().isEmpty() || edtEmailAsignatura.getText().toString().isEmpty() || edtProfesorAsignatura.getText().toString().isEmpty()){
@@ -499,7 +506,7 @@ public class NuevaAsignaturaFragment extends Fragment {
         niveles.add("4");
         niveles.add("5");
         nivelSpinner = (Spinner) view.findViewById(R.id.spnNivel);
-        ArrayAdapter<String> nivelAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.support_simple_spinner_dropdown_item, niveles){
+        ArrayAdapter<String> nivelAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.spinner_style, niveles){
             @Override
             public boolean isEnabled(int position){
                 if(position == 0)
@@ -559,7 +566,7 @@ public class NuevaAsignaturaFragment extends Fragment {
         periodos.add("2° Cuatrimestre");
         periodos.add("Anual");
         periodoSpinner = (Spinner) view.findViewById(R.id.spnPeriodo);
-        ArrayAdapter<String> periodoAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.support_simple_spinner_dropdown_item, periodos){
+        ArrayAdapter<String> periodoAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(),R.layout.spinner_style, periodos){
             @Override
             public boolean isEnabled(int position){
                 if(position == 0)
