@@ -159,7 +159,11 @@ public class EvaluacionFragment extends Fragment {
                 mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        edtHoraEvaluacion.setText( selectedHour + ":" + selectedMinute);
+
+                        if (selectedMinute<10)
+                            edtHoraEvaluacion.setText( selectedHour + ":0" + selectedMinute);
+                        else
+                            edtHoraEvaluacion.setText( selectedHour + ":" + selectedMinute);
                         // hora = new Time(selectedHour,selectedMinute,0 );
                         hora = selectedHour;
                         minutos = selectedMinute;

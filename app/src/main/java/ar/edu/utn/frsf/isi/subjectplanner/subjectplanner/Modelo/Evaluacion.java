@@ -51,6 +51,7 @@ public class Evaluacion {
         this.asignatura = asignatura;
         this.notaRegularidad = notaRegularidad;
         this.notaPromocion = notaPromocion;
+        this.avisar = avisar;
         this.notaObtenida=-1;
     }
 
