@@ -296,6 +296,12 @@ public class NuevaTareaFragment extends Fragment {
                         @Override
                         public void run() {
                             try {
+                                //Si tiene alarma, la elimino antes de eliminar la tarea
+                                if(tarea.getAvisar()==1){
+                                    myIntent.putExtra("nombre", tarea.getNombre());
+                                    myPendingIntent = PendingIntent.getBroadcast(getActivity().getApplicationContext(), tarea.getTiempoCreacion(), myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    manager.cancel(myPendingIntent);
+                                }
                                 tdao = MyDatabase.getInstance(getActivity().getApplicationContext()).getTareaDao();
                                 tdao.delete(tarea);
                                 tarea=null;
