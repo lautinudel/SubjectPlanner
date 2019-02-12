@@ -148,7 +148,12 @@ public class NuevaTareaFragment extends Fragment {
                 mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        edtHora.setText( selectedHour + ":" + selectedMinute);
+
+                        if (selectedMinute<10)
+                            edtHora.setText( selectedHour + ":0" + selectedMinute);
+                        else
+                            edtHora.setText( selectedHour + ":" + selectedMinute);
+
                        // hora = new Time(selectedHour,selectedMinute,0 );
                         hora = selectedHour;
                         minutos = selectedMinute;
