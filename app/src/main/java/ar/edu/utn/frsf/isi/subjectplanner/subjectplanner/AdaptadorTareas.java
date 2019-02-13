@@ -39,13 +39,19 @@ public class AdaptadorTareas extends BaseAdapter {
         TextView dia = (TextView) vista.findViewById(R.id.textViewDia);
         TextView hora = (TextView) vista.findViewById(R.id.textViewHora);
         TextView avisar = (TextView) vista.findViewById(R.id.textViewAvisar);
+
         titulo.setText(datos.get(i).getNombre().toString());
         dia.setText(datos.get(i).getDia()+"/"+datos.get(i).getMes()+"/"+datos.get(i).anio);
-        hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());
-        if(datos.get(i).avisar==1)avisar.setText("Avisar: Si");
-        else avisar.setText("Avisar: No");
 
+        if (datos.get(i).getMinutos()<10)
+            hora.setText(datos.get(i).getHora()+":0"+datos.get(i).getMinutos());
+        else
+            hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());
 
+        if(datos.get(i).avisar==1)
+            avisar.setText("Avisar: Sí");
+        else
+            avisar.setText("Avisar: No");
 
         return vista;
     }

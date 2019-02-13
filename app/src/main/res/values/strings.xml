@@ -15,6 +15,7 @@
     <string name="Guardar">Guardar</string>
     <string name="Vacio">No hay tareas pendientes</string>
     <string name="VacioAsignaturas">No hay asignaturas para mostrar</string>
+    <string name="VacioFotografias">No hay fotografías para mostrar</string>
     <string name="VacioProfesores">No hay profesores para mostrar</string>
     <string name="VacioEvaluaciones">No hay evaluaciones para mostrar</string>
     <string name="Eliminar">Eliminar</string>

@@ -86,26 +86,32 @@ public class IngresarNotaEvFragment extends Fragment {
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(evaluacion!=null){
-                    Thread r = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                evaluacion.setNotaObtenida(Integer.valueOf(edtNotaObtenida.getText().toString()));
-                                edao = MyDatabase.getInstance(getActivity().getApplicationContext()).getEvaluacionesDao();
-                                edao.update(evaluacion);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity().getApplicationContext(), "La calificación se agregó exitosamente", Toast.LENGTH_LONG).show();
-                                    edtNotaObtenida.setText("");
+
+                    if (edtNotaObtenida.getText().toString().isEmpty()) {
+                        Toast.makeText(getActivity().getApplicationContext(),"Asegúrese de completar el campo",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Thread r = new Thread() {
+                            @Override
+                            public void run() {
+                                try {
+                                    evaluacion.setNotaObtenida(Integer.valueOf(edtNotaObtenida.getText().toString()));
+                                    edao = MyDatabase.getInstance(getActivity().getApplicationContext()).getEvaluacionesDao();
+                                    edao.update(evaluacion);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            });
-                        }
-                    };
-                    r.start();
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "La calificación se agregó exitosamente", Toast.LENGTH_LONG).show();
+                                        edtNotaObtenida.setText("");
+                                    }
+                                });
+                            }
+                        };
+                        r.start();
+                    }
                 }
 
             }

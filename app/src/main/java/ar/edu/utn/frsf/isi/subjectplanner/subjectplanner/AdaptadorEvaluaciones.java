@@ -30,13 +30,30 @@ public class AdaptadorEvaluaciones extends BaseAdapter {
         TextView dia = (TextView) vista.findViewById(R.id.textViewDiaEv);
         TextView hora = (TextView) vista.findViewById(R.id.textViewHoraEv);
         TextView avisar = (TextView) vista.findViewById(R.id.textViewAvisarEv);
+        TextView notaPromo = (TextView) vista.findViewById(R.id.textViewNotaPromo);
+        TextView notaRegu = (TextView) vista.findViewById(R.id.textViewNotaRegu);
+        TextView notaObtenida = (TextView) vista.findViewById(R.id.textViewNotaObtenida);
         
         titulo.setText(datos.get(i).getNombre().toString());
-        dia.setText(datos.get(i).getDia()+"/"+datos.get(i).getMes()+"/"+datos.get(i).anio);
-        hora.setText(datos.get(i).getHora()+":"+datos.get(i).getMinutos());
-        if(datos.get(i).avisar==1)avisar.setText("Avisar: Si");
-        else avisar.setText("Avisar: No");
+        dia.setText(datos.get(i).getDia() + "/"+datos.get(i).getMes() + "/"+datos.get(i).anio);
 
+        if (datos.get(i).getMinutos()<10)
+            hora.setText(datos.get(i).getHora() + ":0"+datos.get(i).getMinutos());
+        else
+            hora.setText(datos.get(i).getHora() + ":"+datos.get(i).getMinutos());
+
+        if(datos.get(i).avisar==1)
+            avisar.setText("Avisar: Sí");
+        else
+            avisar.setText("Avisar: No");
+
+        notaPromo.setText("Nota Promo: " + datos.get(i).getNotaPromocion());
+        notaRegu.setText("Nota Regu: " + datos.get(i).getNotaRegularidad());
+
+        if (datos.get(i).getNotaObtenida() == -1)
+            notaObtenida.setText("Nota Obtenida: -");
+        else
+            notaObtenida.setText("Nota Obtenida: " + datos.get(i).getNotaObtenida());
 
 
         return vista;

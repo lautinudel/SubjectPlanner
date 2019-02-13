@@ -285,17 +285,19 @@ public class NuevaAsignaturaFragment extends Fragment {
                                 edao = MyDatabase.getInstance(getActivity().getApplicationContext()).getEvaluacionesDao();
                                 aux = edao.getAll();
 
+                                evaluaciones.clear();
                                 for(Evaluacion e : aux){
-                                    if(e.getAsignatura().getId() == asignatura.getId()){
-                                        evaluaciones.add(e);
-                                    }
+                                    if(e.getAsignatura().getId() == asignatura.getId())
+                                            evaluaciones.add(e);
                                 }
+                                //System.out.println("EVAL SIZE: " + evaluaciones.size());
 
                                 //flag vale 1 si se han ingresado todos los resultados de las evaluaciones, 2 si falta ingresar el resultado de una
                                 //o mas evaluaciones, y vale 3 si aun no hay evaluaciones asociadas a la asignatura.
                                 flag = 1;
                                 int k = 0;
                                 while (k<evaluaciones.size() && flag==1) {
+
                                     if (evaluaciones.get(k).getNotaObtenida() == -1)
                                         flag = 2;
                                     k++;
@@ -318,7 +320,7 @@ public class NuevaAsignaturaFragment extends Fragment {
                                 if (!compararPorVerdadero(estadoAsignatura,"Promocionada")) {
                                     int j = 0;
                                     int contEvalRegularizadas = 0;
-                                    System.out.println("EVAL SIZE: "+evaluaciones.size());
+
                                     while (j<evaluaciones.size() && evaluaciones.get(j).getNotaObtenida() >= evaluaciones.get(j).getNotaRegularidad()) {
                                         contEvalRegularizadas++;
                                         j++;

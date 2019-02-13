@@ -45,6 +45,8 @@
             android:name=".AlarmNotificationReceiver"
             android:enabled="true"
             android:exported="true" />
+
+
     </application>
 
 </manifest>
